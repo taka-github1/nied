@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+
+  <meta charset="UTF-8">
+  
+<link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+<meta name="apple-mobile-web-app-title" content="CodePen">
+
+<link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+
+<link rel="mask-icon" type="" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+
+
+  <title>CodePen - サプライチェーン解析</title>
+  
+  
+  
+  
+<style>
+html,
+body,
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+}
+#timeSliderDiv {
+  position: absolute;
+  left: 50px;
+  right: 50px;
+  bottom: 50px;
+}
+#infoDiv {
+  height: 380px;
+  padding: 10px;
+  width: 320px;
+  /* opacity: 0.7; */
+}
+#infoDiv span {
+  color: #ff642e;
+  font-size: 12pt;
+  font-weight: bolder;
+}
+
+/* esri overrides */
+.esri-widget {
+  border: 1px solid #444;
+}
+.esri-ui-corner .esri-component.esri-widget--panel {
+  width: 120px;
+}
+.esri-legend__service {
+  padding: 0;
+  padding-top: 4px;
+}
+.esri-time-slider__layout--wide .esri-time-slider__time-extent,
+.esri-time-slider__layout--compact .esri-time-slider__time-extent,
+.esri-time-slider__layout--wide .esri-time-slider__min,
+.esri-time-slider__layout--wide .esri-time-slider__max,
+.esri-time-slider__layout--compact .esri-time-slider__min-date,
+.esri-time-slider__layout--compact .esri-time-slider__max-date,
+.esri-legend__layer-caption {
+  display: none;
+}
+</style>
+
+  
+  
+  
+  
+
+</head>
+
+<body translate="no" >
+  <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+<title>
+      TimeSlider
+    </title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.16/esri/themes/dark-red/main.css"
+    />
+    <script src="https://js.arcgis.com/4.16/"></script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+    <div id="timeSliderDiv"></div>
+    
+      <!--
+      <canvas
+        id="fireChart"
+        height="250"
+        width="300"
+        class="esri-widget"
+      ></canvas>
+      -->
+    </div>
+  </body>
+</html>
+  
+  
+      <script id="rendered-js" >
+require([
+  "esri/WebMap", 
+  "esri/layers/FeatureLayer",
+  "esri/views/MapView",
+  "esri/widgets/Legend",
+  "esri/widgets/Expand",
+  "esri/widgets/Legend",
+  "esri/widgets/TimeSlider",
+  "esri/core/watchUtils",
+  "esri/core/promiseUtils",
+  "esri/layers/ImageryLayer",
+  "esri/tasks/support/Query",
+  "esri/tasks/QueryTask",
+  "esri/renderers/ClassBreaksRenderer",
+  "esri/layers/support/RasterFunction",
+  "esri/renderers/RasterColormapRenderer",
+  "esri/layers/support/MosaicRule"
+], function (
+        WebMap,
+         FeatureLayer,
+         MapView,
+         Legend,
+         Expand,
+         Legend,
+         TimeSlider,
+         watchUtils,
+         promiseUtils,
+         ImageryLayer,
+         Query,
+         QueryTask,
+         ClassBreaksRenderer,
+         RasterFunction,
+         RasterColormapRenderer,
+         MosaicRule
+        ) {
+
+  cnt = 0;
+
+  const map = new WebMap({
+    portalItem: {
+      id: "8c25d7bccc3e4b5896131c16821967a1"
+    }
+  });
+
+  const view = new MapView({
+    container: "viewDiv",
+    map: map
+  });
+
+  var timeSlider = new TimeSlider({
+    container: "timeSliderDiv",
+    view: view,
+    fullTimeExtent: {
+      start: new Date(2021, 3, 1, 9, 0),
+      end: new Date(2021, 11, 31, 9, 0)
+    },
+    playRate: 2000,
+    mode: "instant",
+    stops: {
+      interval: {
+        value: 1,
+        unit: "days"
+      }
+    }
+  });
+
+  timeSlider.watch("values", function(values){
+    var str_date = values[0].getFullYear() + "/" + (values[0].getMonth()+1) + "/" + values[0].getDate();
+
+    feature_query(values[0]);
+  });
+  
+  var supplyFeturelayer = null;
+  var shinsuiFeaturelayer 
+= null;
+
+  map.when(function (layers) {
+    supplyFeturelayer = layers.findLayerById("1779fc2549c-layer-5");
+    
+    shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
+    
+    
+    feature_query(new Date(2021, 3, 1));
+    
+  });
+
+
+  function feature_query(date){
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+    
+    supplyFeturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
+    
+    shinsuiFeaturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
+    /*
+    supplyFeturelayer.filter = {
+      where: "OPERATINGDAY = '" + str_date + "'"
+    };
+    
+    shinsuiFeaturelayer.filter = {
+      where: "OPERATINGDAY = '" + str_date + "'"
+    };
+    */
+
+  }
+
+});
+
+function formatDate (date, format) {
+  format = format.replace(/yyyy/g, date.getFullYear());
+  format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+  format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+  format = format.replace(/HH/g, ('0' + date.getHours()).slice(-2));
+  format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+  format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+  format = format.replace(/SSS/g, ('00' + date.getMilliseconds()).slice(-3));
+  return format;
+};
+    </script>
+
+  
+
+</body>
+
+</html>
+ 
