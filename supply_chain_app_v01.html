@@ -25,7 +25,7 @@ html,
 body,
 
 #mainDiv {
-  height: 99%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -68,7 +68,7 @@ body,
   flex-direction: column;
 }
 
-.chart-panel {
+#chartDiv {
   display: flex;
   flex-wrap: wrap; 
   flex-direction: column;
@@ -151,12 +151,13 @@ li:hover {
       TimeSlider
     </title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
     <link
           rel="stylesheet"
           href="https://js.arcgis.com/4.16/esri/themes/dark-red/main.css"
           />
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="https://js.arcgis.com/4.16/"></script>
   </head>
 
@@ -168,10 +169,8 @@ li:hover {
       <div id="centermainDiv">
         <div id="leftDiv">
           <span class="subtitle">Operation Supply Chain</span>
-          <div id="chatDiv">
-            <div class="chart-panel">
-              <canvas id="chartCanvas"/>
-            </div>
+          <div id="chartDiv">
+            <canvas id="chartCanvas"/>
           </div>
           <!--div id="layerListDiv"></div>-->
         </div>
@@ -228,7 +227,7 @@ require([
   cnt = 0;
 
   var chart = null;
-  
+
   let highlightSelect;
 
   const map = new WebMap({
@@ -249,7 +248,7 @@ require([
       }
     }
   });
-  
+
   var layerlist = new LayerList({
     view: view,
     //container: "layerListDiv",
@@ -281,6 +280,7 @@ require([
     drawChart(values[0]);
     suspendlist_query(values[0]);
 
+    view.popup.close();
   });
 
   var supplyFeturelayer = null;
@@ -293,7 +293,7 @@ require([
 
     shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
     shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
-    
+
     shinsuiFeaturelayer_query(new Date(2021, 3, 1));
     shinsuiImagelayer_query(new Date(2021, 3, 1));
     drawChart(new Date(2021, 3, 1));
@@ -307,13 +307,13 @@ require([
         e.preventDefault();
         feature_highlight(e)
       });
-      
+
       function feature_highlight(event) {
 
-        
+
         let value = event.target.id.split(',');
-        
-        
+
+
         var query = supplyFeturelayer.createQuery();
         query.where = "BASE_ID=" + value[0] + " AND OPERATINGDAY ='" + value[1] + "'";
         supplyFeturelayer.queryFeatures(query).then(function(result) {
@@ -329,7 +329,7 @@ require([
             featureMenuOpen: true,
             updateLocationEnabled: true
           });
-          
+
           view.goTo(
             {
               target: feature.geometry
@@ -368,7 +368,7 @@ require([
     shinsuiImagelayer.mosaicRule = mr;
 
   }
-  
+
   function drawChart(date) {
 
     var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
@@ -376,13 +376,14 @@ require([
     var query = supplyFeturelayer.createQuery();
 
     //稼働のみ
-    query.where = "OPERATINGDAY = '" + str_date + "' AND AVAILABLE = 0";
+    query.where = "OPERATINGDAY = '" + str_date + "'";
     query.outFields = [
-      "BASE_TYPE"
+      "BASE_TYPE,AVAILABLE"
     ];
 
-    query.groupByFieldsForStatistics = "BASE_TYPE";
-
+    query.groupByFieldsForStatistics = "BASE_TYPE,AVAILABLE";
+    query.orderByFields = "BASE_TYPE,AVAILABLE";
+    
     query.outStatistics = [
       {
         statisticType: "count",
@@ -395,24 +396,45 @@ require([
       .then(function(response){
       var features = response.features;
 
+      var available_list = {};
+      var notavailable_list = {};
       var labels = [];
       var available_count = [];
+      var notavailable_count = [];
 
+      //初期化
       for(var i = 0; i< features.length; i++) {
         var base_type = features[i].attributes["BASE_TYPE"];
-        var count = features[i].attributes["カウント"];
-
-        labels.push(base_type);
-        available_count.push(count);
+        if (labels.indexOf(base_type) == -1) {
+          labels.push(base_type);
+          available_list[base_type] = 0;
+          notavailable_list[base_type] = 0;
+        }
       }
+      
+      //件数の取得
+      for(var i = 0; i< features.length; i++) {
+        var base_type = features[i].attributes["BASE_TYPE"];
+        var available = features[i].attributes["AVAILABLE"];
+        var count = features[i].attributes["カウント"];
+        
+        if (available == 0) {
+          available_list[base_type] = count;
+        } else {
+          notavailable_list[base_type] = count;
+        }
+      }
+      
+      available_count = Object.values(available_list);
+      notavailable_count = Object.values(notavailable_list);
 
-      update_chart(labels, available_count);
+      update_chart(labels, available_count, notavailable_count);
 
     });
 
   }
 
-  function update_chart(labels, datas){
+  function update_chart(labels, available_count, notavailable_count){
 
     var ctx = document.getElementById("chartCanvas").getContext('2d');
 
@@ -423,12 +445,13 @@ require([
     var datasets = [];
 
     datasets.push({
-      data: datas,
-      borderColor: "rgba(0,169,255,1)",
-      backgroundColor: "rgba(0,169,255,1)",
-      datalabels: {
-        display: true
-      }
+      data: available_count,
+      backgroundColor: "rgba(100,255,150,0.5)"
+    });
+    
+    datasets.push({
+      data: notavailable_count,
+      backgroundColor: "rgba(255,0,0,0.5)"
     });
 
     var yLabel = "";
@@ -446,34 +469,64 @@ require([
         layout: {
           padding: {
             left: 0,
-            right: 0,
-            top: 0
+            right: 20,
+            top: 20,
+            bottom: 20
           }
         },
         legend: {
           display: false
         },
-        animation: false,
+        tooltips: {
+          enabled: false
+        },
+        hover: {
+          animationDuration: 0
+        },
+        animation: {
+          duration: 1,
+          onComplete: function () {
+            var chartInstance = this.chart;
+            var ctx = chartInstance.ctx;
+            ctx.textAlign = "left";
+            ctx.font = "12px Open Sans";
+            ctx.fillStyle = "#fff";
+
+            Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
+              var meta = chartInstance.controller.getDatasetMeta(i);
+              Chart.helpers.each(meta.data.forEach(function (bar, index) {
+                
+
+                if(i==0){
+                  data = " " + dataset.data[index] + " Available";
+                  ctx.fillText(data, bar._model.base, bar._model.y+4);
+                } else {
+                  data = " " + dataset.data[index] + " Suspended ";
+                  ctx.fillText(data, bar._model.base, bar._model.y+4);
+                }
+              }),this)
+            }),this);
+          }
+        },
         scales: {
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: 'Available Count',
+              labelString: 'Place',
               fontSize: 12
             },
             ticks: {
               beginAtZero: true,
               stepSize: 10,
-              suggestedMax: 100,
               callback: function(value, index, values){
                 return  value
               }
-            }
+            },
           }],
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: yLabel,
+              labelString: "type",
               fontSize: 12
             },
             ticks: {
@@ -484,25 +537,12 @@ require([
                 } else {
                   return label
                 }
-
               }
-            }
+            } 
           }]
         },
         responsive: true,
         maintainAspectRatio: false
-
-      },
-      plugins: {
-        datalabels: {
-          display: true,
-          align: "end",
-          anchor: "end",
-          color: "black",
-          formatter: function(value, context) {
-            return context.chart.data.labelsData[context.dataIndex];
-          },
-        }
       }
     });
   }
@@ -522,7 +562,7 @@ require([
     supplyFeturelayer.queryFeatures(query)
       .then(function(response){
       var features = response.features;
-      
+
       $('#supply-chain-list').empty();
 
       for(var i = 0; i< features.length; i++) {
@@ -531,7 +571,7 @@ require([
         var base_type = features[i].attributes["BASE_TYPE"];
         var depth = features[i].attributes["INUNDATION_DEPTH"];
         var operatingday = new Date(features[i].attributes["OPERATINGDAY"]);
-        
+
         var str_operatingday = operatingday.getFullYear() + "/" + (operatingday.getMonth()+1) + "/" + operatingday.getDate();
 
         if (base_type == null) {
@@ -541,7 +581,7 @@ require([
       }
     });
   }
-  
+
 });
 
 
