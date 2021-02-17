@@ -25,12 +25,33 @@ html,
 body,
 
 #mainDiv {
+  width:100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background-color: black;
   color: white;
+}
+
+.change_body {
+  margin: 0 0 0 auto;
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  text-decoration: none;
+  color: #FFF;
+  background: #fd9535;/*背景色*/
+  border-bottom: solid 2px #d27d00;/*少し濃い目の色に*/
+  border-radius: 4px;/*角の丸み*/
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), 0 2px 2px rgba(0, 0, 0, 0.19);
+  font-weight: bold;
+  width: 120px;
+}
+
+.change_body:active {
+  border-bottom: solid 2px #fd9535;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
 }
 
 #headerDiv {
@@ -40,7 +61,7 @@ body,
 }
 
 #centermainDiv {
-  height: 80%;
+  height: 90%;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -68,7 +89,7 @@ body,
   flex-direction: column;
 }
 
-#chartDiv {
+.chartStyle {
   display: flex;
   flex-wrap: wrap; 
   flex-direction: column;
@@ -95,6 +116,17 @@ body,
   display: none !important;
 }
 
+.body-active {
+  display: flex;
+  width: 100%;
+  height: 90%;
+  flex-direction: column;
+}
+
+.body-nonactive {
+  display: none;
+}
+
 .header_icon {
   width: 40px;
   height: 40px;
@@ -115,9 +147,9 @@ body,
 }
 
 ul {
-  margin: 0 auto;
-  padding: 0;
-  width: 95%;
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-left: 10px;
   overflow-y: auto;
 }
 
@@ -126,13 +158,16 @@ ul + div {
 }
 
 ul:empty + div {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-left: 10px;
   display: block;
-  padding: 10px;
   font-size: 14px;
 }
 
 li {
   list-style: none;
+  width: 90%;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px 10px 10px 10px;
   border: 1px solid #CCC;
@@ -172,7 +207,6 @@ li:hover {
       TimeSlider
     </title>
 
-
     <link
           rel="stylesheet"
           href="https://js.arcgis.com/4.16/esri/themes/dark-red/main.css"
@@ -187,24 +221,33 @@ li:hover {
       <div id="headerDiv">
         <img class="header_icon" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/5502f07c4aff40c2b19fd971b5878946/data">
         <span class="title">Supply Chain Flood Risk Simulation</span>
+        <button id="change_body" class="change_body">Time Slider</button>
       </div>
-      <div id="centermainDiv">
-        <div id="leftDiv">
-          <span class="subtitle">Operation Supply Chain</span>
-          <div id="chartDiv">
-            <canvas id="chartCanvas"/>
+      <div id="body1Div" class="body-active">
+        <div id="centermainDiv">
+          <div id="leftDiv">
+            <span class="subtitle">Operation Supply Chain</span>
+            <div id="classificationChartDiv" class="chartStyle">
+              <canvas id="classificationChartCanvas"/>
+            </div>
+            <!--div id="layerListDiv"></div>-->
           </div>
-          <!--div id="layerListDiv"></div>-->
+          <div id="viewDiv"></div>
+          <div id="rightDiv">
+            <span class="subtitle">Suspended Supply Chain</span>
+            <ul id="supply-chain-list">
+            </ul>
+            <div>No Data</div>
+          </div>
         </div>
-        <div id="viewDiv"></div>
-        <div id="rightDiv">
-          <span class="subtitle">Suspended Supply Chain</span>
-          <ul id="supply-chain-list">
-          </ul>
-          <div>No Data</div>
+        <div id="timeSliderDiv"></div>
+      </div>
+      <div id="body2Div" class="body-nonactive">
+        <span class="subtitle">Supply Chain Time Transition</span>
+        <div id="timeSeriesChartDiv" class="chartStyle">
+          <canvas id="timeSeriesChartCanvas"/>
         </div>
       </div>
-      <div id="timeSliderDiv"></div>
     </div>
   </body>
 </html>
@@ -249,8 +292,9 @@ require([
 
   cnt = 0;
 
-  var chart = null;
-
+  var classificationChart = null;
+  var timeSeriesChart = null;
+  
   let highlightSelect;
 
   const map = new WebMap({
@@ -278,6 +322,20 @@ require([
     respectLayerVisibility: false
   });
 
+  var lgExpand = new Expand({
+    view: view,
+    expanded: false,
+    mode : "floating"
+  });
+  view.ui.add(lgExpand, "bottom-right");
+  
+  var legend = new Legend({
+    view: view,
+    respectLayerVisibility: true
+  });
+
+  lgExpand.content = legend;
+  
   var timeSlider = new TimeSlider({
     container: "timeSliderDiv",
     view: view,
@@ -300,7 +358,7 @@ require([
 
     shinsuiFeaturelayer_query(values[0]);
     shinsuiImagelayer_query(values[0]);
-    drawChart(values[0]);
+    drawClassificationChart(values[0]);
     suspendlist_query(values[0]);
 
     view.popup.close();
@@ -319,8 +377,10 @@ require([
 
     shinsuiFeaturelayer_query(new Date(2021, 3, 1));
     shinsuiImagelayer_query(new Date(2021, 3, 1));
-    drawChart(new Date(2021, 3, 1));
+    drawClassificationChart(new Date(2021, 3, 1));
     suspendlist_query(new Date(2021, 3, 1));
+    
+    drawTimeSeriesChart();
   });
 
   view.when(function() {
@@ -377,7 +437,30 @@ require([
     });
   });
 
-
+  
+  $('#change_body').click(function(e){
+    
+    if (e.target.textContent == "Time Slider") {
+      $('#change_body').text("All Time");
+    } else {
+      $('#change_body').text("Time Slider");
+    }
+    $('#body1Div').toggleClass("body-active");
+    $('#body1Div').toggleClass("body-nonactive");
+    $('#body2Div').toggleClass("body-active");
+    $('#body2Div').toggleClass("body-nonactive");
+  });
+  
+  $('#btn_body2Div').click(function(){
+    $('#body1Div').removeClass(function(index, className) {
+      return (className.match(/\bbody-\S+/g) || []).join(' ');
+    });
+    $('#body2Div').removeClass(function(index, className) {
+      return (className.match(/\bbody-\S+/g) || []).join(' ');
+    });
+    $('#body1Div').addClass("body-nonactive");
+    $('#body2Div').addClass("body-active");
+  });
 
   function shinsuiFeaturelayer_query(date){
 
@@ -398,7 +481,7 @@ require([
 
   }
 
-  function drawChart(date) {
+  function drawClassificationChart(date) {
 
     var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
 
@@ -457,18 +540,18 @@ require([
       available_count = Object.values(available_list);
       notavailable_count = Object.values(notavailable_list);
 
-      update_chart(labels, available_count, notavailable_count);
+      update_classificationChart(labels, available_count, notavailable_count);
 
     });
 
   }
 
-  function update_chart(labels, available_count, notavailable_count){
+  function update_classificationChart(labels, available_count, notavailable_count){
 
-    var ctx = document.getElementById("chartCanvas").getContext('2d');
+    var ctx = document.getElementById("classificationChartCanvas").getContext('2d');
 
-    if (chart != null) {
-      chart.destroy();
+    if (classificationChart != null) {
+      classificationChart.destroy();
     }
 
     var datasets = [];
@@ -485,7 +568,7 @@ require([
 
     var yLabel = "";
 
-    chart = new Chart(ctx, {
+    classificationChart = new Chart(ctx, {
       type: 'horizontalBar',
       data: {
         labels: labels,
@@ -575,6 +658,160 @@ require([
       }
     });
   }
+  
+  
+  function drawTimeSeriesChart() {
+
+    var query = supplyFeturelayer.createQuery();
+
+    //稼働のみ
+    query.where = "1=1";
+    query.outFields = [
+      "OPERATINGDAY,AVAILABLE"
+    ];
+
+    query.groupByFieldsForStatistics = "OPERATINGDAY,AVAILABLE";
+    query.orderByFields = "OPERATINGDAY,AVAILABLE";
+    
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    supplyFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      var available_list = {};
+      var notavailable_list = {};
+      var labels = [];
+      var available_count = [];
+      var notavailable_count = [];
+      
+      //初期化
+      for(var i = 0; i< features.length; i++) {
+        var date = new Date(features[i].attributes["OPERATINGDAY"]);
+        var date_txt = formatDate(date, "MM/dd");
+        if (labels.indexOf(date_txt) == -1) {
+          labels.push(date_txt);
+          available_list[date_txt] = 0;
+          notavailable_list[date_txt] = 0;
+        }
+      }
+      
+      //件数の取得
+      for(var i = 0; i< features.length; i++) {
+        var date = new Date(features[i].attributes["OPERATINGDAY"]);
+        var date_txt = formatDate(date, "MM/dd");
+        var available = features[i].attributes["AVAILABLE"];
+        var count = features[i].attributes["カウント"];
+        
+        if (available == 0) {
+          available_list[date_txt] = count;
+        } else {
+          notavailable_list[date_txt] = count;
+        }
+      }
+      
+      available_count = Object.values(available_list);
+      notavailable_count = Object.values(notavailable_list);
+
+      update_timeSeriesChart(labels, available_count, notavailable_count);
+
+    });
+
+  }
+  
+  function update_timeSeriesChart(labels, available_count, notavailable_count){
+
+    var ctx = document.getElementById("timeSeriesChartCanvas").getContext('2d');
+
+    if (timeSeriesChart != null) {
+      timeSeriesChart.destroy();
+    }
+
+    var datasets = [];
+
+    datasets.push({
+      label: "Available Count",
+      data: available_count,
+      backgroundColor: "rgba(100,255,150,0.8)"
+    });
+    
+    datasets.push({
+      label: "Suspended Count",
+      data: notavailable_count,
+      backgroundColor: "rgba(255,0,0,0.8)"
+    });
+
+    var yLabel = "";
+
+    timeSeriesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        title: {
+          display: false
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 20,
+            bottom: 20
+          }
+        },
+        legend: {
+          display: true
+        },
+        tooltips: {
+          enabled: true
+        },
+        hover: {
+          animationDuration: 0
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "Time"
+            },
+            ticks: {
+              display: true, 
+              callback: function(value, index, values){
+                return value
+              },
+              autoSkip: true,
+              maxTicksLimit: 30
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Available",
+              fontSize: 12
+            },
+            ticks: {
+              beginAtZero: true,
+              userCallback: function(label, index, labels) {
+                return label
+              }
+            },
+            stacked: true
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
 
   function suspendlist_query(date) {
 
@@ -614,7 +851,7 @@ require([
 });
 
 
-function formatDate (date, format) {
+function formatDate(date, format) {
   format = format.replace(/yyyy/g, date.getFullYear());
   format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
   format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
