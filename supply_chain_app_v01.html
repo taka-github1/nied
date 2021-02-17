@@ -34,9 +34,9 @@ body,
 }
 
 #headerDiv {
-  height: 10%;
   display: flex;
   flex-direction: row;
+  padding: 5px;
 }
 
 #centermainDiv {
@@ -95,16 +95,23 @@ body,
   display: none !important;
 }
 
+.header_icon {
+  width: 40px;
+  height: 40px;
+}
+
 .title {
   font-size: 24px;
   color: white;
   font-weight: bold;
+  padding-left: 10px;
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 16px;
   color: red;
   font-weight: bold;
+  padding-left: 10px;
 }
 
 ul {
@@ -112,6 +119,16 @@ ul {
   padding: 0;
   width: 95%;
   overflow-y: auto;
+}
+
+ul + div {
+  display: none;
+}
+
+ul:empty + div {
+  display: block;
+  padding: 10px;
+  font-size: 14px;
 }
 
 li {
@@ -125,6 +142,10 @@ li {
   cursor: pointer;
   border-radius: 3px;
   font-size: 9px;
+}
+
+.li_selected {
+  background-color: rgba(0, 0, 120, 0.8);
 }
 
 li:hover {
@@ -164,6 +185,7 @@ li:hover {
   <body>
     <div id="mainDiv">
       <div id="headerDiv">
+        <img class="header_icon" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/5502f07c4aff40c2b19fd971b5878946/data">
         <span class="title">Supply Chain Flood Risk Simulation</span>
       </div>
       <div id="centermainDiv">
@@ -179,6 +201,7 @@ li:hover {
           <span class="subtitle">Suspended Supply Chain</span>
           <ul id="supply-chain-list">
           </ul>
+          <div>No Data</div>
         </div>
       </div>
       <div id="timeSliderDiv"></div>
@@ -302,10 +325,16 @@ require([
 
   view.when(function() {
 
+    //Suspend Suppy Chainリスト選択
     view.whenLayerView(supplyFeturelayer).then(function(layerView) {
       $('body').on('click', '#supply-chain-list li', function(e){
+        
+        for (let li of $('li')) {
+          li.classList.remove("li_selected");
+        }
         e.preventDefault();
-        feature_highlight(e)
+        e.target.classList.add("li_selected");
+        feature_highlight(e);
       });
 
       function feature_highlight(event) {
