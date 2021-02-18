@@ -83,8 +83,9 @@ body,
 }
 
 #rightDiv {
-  width: 30%;
+  padding: 0;
   height: 100%;
+  width: 30%;
   display: flex;
   flex-direction: column;
 }
@@ -149,8 +150,10 @@ body,
 ul {
   margin-top: 0px;
   padding-top: 0px;
+  padding-bottom: 0px;
   padding-left: 10px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 ul + div {
@@ -221,7 +224,7 @@ li:hover {
       <div id="headerDiv">
         <img class="header_icon" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/5502f07c4aff40c2b19fd971b5878946/data">
         <span class="title">Supply Chain Flood Risk Simulation</span>
-        <button id="change_body" class="change_body">Time Slider</button>
+        <button id="change_body" class="change_body">All Time</button>
       </div>
       <div id="body1Div" class="body-active">
         <div id="centermainDiv">
@@ -440,26 +443,15 @@ require([
   
   $('#change_body').click(function(e){
     
-    if (e.target.textContent == "Time Slider") {
-      $('#change_body').text("All Time");
-    } else {
+    if (e.target.textContent == "All Time") {
       $('#change_body').text("Time Slider");
+    } else {
+      $('#change_body').text("All Time");
     }
     $('#body1Div').toggleClass("body-active");
     $('#body1Div').toggleClass("body-nonactive");
     $('#body2Div').toggleClass("body-active");
     $('#body2Div').toggleClass("body-nonactive");
-  });
-  
-  $('#btn_body2Div').click(function(){
-    $('#body1Div').removeClass(function(index, className) {
-      return (className.match(/\bbody-\S+/g) || []).join(' ');
-    });
-    $('#body2Div').removeClass(function(index, className) {
-      return (className.match(/\bbody-\S+/g) || []).join(' ');
-    });
-    $('#body1Div').addClass("body-nonactive");
-    $('#body2Div').addClass("body-active");
   });
 
   function shinsuiFeaturelayer_query(date){
