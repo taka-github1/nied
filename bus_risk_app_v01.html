@@ -283,7 +283,8 @@ require([
   "esri/widgets/Expand",
   "esri/widgets/TimeSlider",
   "esri/tasks/support/Query",
-  "esri/layers/support/MosaicRule"
+  "esri/layers/support/MosaicRule",
+  "esri/layers/support/RasterFunction",
 ], function (
         WebMap,
          MapView,
@@ -295,11 +296,23 @@ require([
          Expand,
          TimeSlider,
          Query,
-         MosaicRule
+         MosaicRule,
+         RasterFunction
         ) {
 
   cnt = 0;
 
+  var notavailablerouteFeturelayer = null;
+  var routeFeturelayer = null;
+  var shinsuiFeaturelayer = null;
+  var stretch_shinsuiImagelayer = null;
+  var class_shinsuiImagelayer = null;
+  var staffMasterTable = null;
+  var staffCommutingTable = null;
+  
+  var notavailablerouteGraphicsLayer = null;
+  var summary_notavailablerouteGraphicsLayer = null;
+  
   var classificationChart = null;
   var timeSeriesChart = null;
 
@@ -315,8 +328,15 @@ require([
     }
   });
   
-  var notavailablerouteGraphicsLayer = new GraphicsLayer();
+  notavailablerouteGraphicsLayer = new GraphicsLayer();
   map.add(notavailablerouteGraphicsLayer);
+  
+  summary_notavailablerouteGraphicsLayer = new GraphicsLayer();
+  map.add(summary_notavailablerouteGraphicsLayer);
+  
+  notavailablerouteGraphicsLayer.visible = true;
+  summary_notavailablerouteGraphicsLayer.visible = false;
+  
   
   const view = new MapView({
     container: "viewDiv",
@@ -344,6 +364,20 @@ require([
   });
 
   lgExpand.content = legend;
+  
+  var btnHtml = '<div class="esri-component esri-widget">';
+  btnHtml += '<div id="btnSwitchImage" class="esri-widget--button esri-widget esri-interactive" style="width: 150px">';
+  btnHtml += '<span id="imagelayertype" aria-hidden="true" class="esri-icon esri-icon-layers">Flood(Class)</span>';
+  
+  $(".esri-ui-top-right").append(btnHtml);
+  
+  btnHtml = '<div class="esri-component esri-widget">';
+  btnHtml += '<div id="btnSwitchBusroute" class="esri-widget--button esri-widget esri-interactive" style="width: 150px">';
+  btnHtml += '<span id="busroutetype" aria-hidden="true" class="esri-icon esri-icon-layers">Bus(Summary)</span>';
+  
+  $(".esri-ui-top-right").append(btnHtml);
+
+  
 
   var timeSlider = new TimeSlider({
     container: "timeSliderDiv",
@@ -375,13 +409,7 @@ require([
     view.popup.close();
   });
 
-  var notavailablerouteFeturelayer = null;
-  var routeFeturelayer = null;
-  var shinsuiFeaturelayer 
-  = null;
-  var shinsuiImagelayer = null;
-  var staffMasterTable = null;
-  var staffCommutingTable = null;
+  
 
   map.when(function (layers) {
     notavailablerouteFeturelayer = layers.findLayerById("BUS_ROUTE_NOTAVAILABLE_FS_v02_3322");
@@ -390,11 +418,12 @@ require([
 
     shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
     
-    //shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
-    shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796_4922");
+    stretch_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796_4922");
+    class_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
     
-    map.reorder(shinsuiImagelayer, 0);
-
+    map.reorder(stretch_shinsuiImagelayer, 0);
+    map.reorder(class_shinsuiImagelayer, 1);
+    
     staffCommutingTable = new FeatureLayer(layers.tables.find(value => value.id == "STAFF_COMMUTING_FS_v02_6920"));
 
     staffMasterTable = new FeatureLayer(layers.tables.find(value => value.id == "STAFF_MASTER_TBL_v02_1316"));
@@ -407,7 +436,7 @@ require([
     absenceleaders_query(new Date(2021, 3, 1));
     suspendlist_query(new Date(2021, 3, 1));
 
-    
+    getSuspend_Bus_RouteGraphic();
   });
 
   view.when(function() {
@@ -480,6 +509,32 @@ require([
     $('#body2Div').toggleClass("body-active");
     $('#body2Div').toggleClass("body-nonactive");
   });
+  
+  $("#btnSwitchImage").click(function(e){
+    
+    if (e.target.textContent == "Flood(stretch)") {
+      $('#imagelayertype').text("Flood(Class)");
+      stretch_shinsuiImagelayer.visible = true;
+      class_shinsuiImagelayer.visible = false;
+    } else {
+      $('#imagelayertype').text("Flood(stretch)");
+      stretch_shinsuiImagelayer.visible = false;
+      class_shinsuiImagelayer.visible = true;
+    }
+  });
+  
+  $("#btnSwitchBusroute").click(function(e){
+    
+    if (e.target.textContent == "Bus(Summary)") {
+      $('#busroutetype').text("Bus(Suspend)");
+      summary_notavailablerouteGraphicsLayer.visible = true;
+      notavailablerouteGraphicsLayer.visible = false;
+    } else {
+      $('#busroutetype').text("Bus(Summary)");
+      summary_notavailablerouteGraphicsLayer.visible = false;
+      notavailablerouteGraphicsLayer.visible = true;
+    }
+  });
 
   //セクションごとの従業員数を取得
   function getSection_Staff_List() {
@@ -534,13 +589,119 @@ require([
     shinsuiFeaturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
     
   }
+  
+  
+  function getSuspend_Bus_RouteGraphic() {
+    var query = notavailablerouteFeturelayer.createQuery();
+
+    query.where = "1=1";
+    query.outFields = [
+      "ROUTE_ID"
+    ];
+    query.returnGeometry = false;
+
+    query.groupByFieldsForStatistics = "ROUTE_ID";
+    query.orderByFields = "ROUTE_ID";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+    
+    notavailablerouteFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+      
+      var suspended_route_ids = {};
+
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        var count = features[i].attributes["カウント"];
+        suspended_route_ids[route_id] = count;
+      }
+
+      
+      query = routeFeturelayer.createQuery();
+      query.outFields = ["*"];
+      query.maxAllowableOffset = 0.001;
+      query.returnGeometry = true;
+
+      routeFeturelayer.queryFeatures(query)
+        .then(function(response){
+
+        summary_notavailablerouteGraphicsLayer.removeAll();
+
+        var features = response.features;
+
+        for(var i = 0; i< features.length; i++) {
+          var route_id = features[i].attributes["ROUTE_ID"];
+
+          var graphic = features[i];
+          graphic.symbol = {
+            type: "simple-line",
+            color: "green",
+            width: "2px",
+            style: "solid"
+          };
+
+          var route_ids = Object.keys(suspended_route_ids);
+          
+          if (route_ids.indexOf(route_id) == -1) {
+            graphic.attributes["COUNT"] = suspended_route_ids[route_id];
+            
+            if (suspended_route_ids[route_id] > 200) { 
+              graphic.symbol.color = "red";
+            } else if (suspended_route_ids[route_id] > 150) { 
+              graphic.symbol.color = "orange";
+            } else if (suspended_route_ids[route_id] > 100) { 
+              graphic.symbol.color = "green";
+            }             
+          } else {
+            graphic.attributes["COUNT"] = 0;
+          }
+          
+
+          graphic.popupTemplate = {
+            title: "{NAME}",
+            content: [
+              {
+                type: "fields",
+                fieldInfos: [
+                  {
+                    fieldName: "ROUTE_ID",
+                    label: "ROUTE_ID"
+                  },
+                  {
+                    fieldName: "NAME",
+                    label: "NAME"
+                  },
+                  {
+                    fieldName: "COUNT",
+                    label: "Suspend Days"
+                  }
+                ]
+              }
+            ]
+          };
+
+          summary_notavailablerouteGraphicsLayer.add(graphic);
+        }
+      });
+    });
+  }
+  
+  
 
   function shinsuiImagelayer_query(date){
 
     var mr = new MosaicRule({
       where: "NAME='" + formatDate(date, 'yyyyMMdd') + "'"
     }); 
-    shinsuiImagelayer.mosaicRule = mr;
+    class_shinsuiImagelayer.mosaicRule = mr;
+    stretch_shinsuiImagelayer.mosaicRule = mr;
 
   }
 
