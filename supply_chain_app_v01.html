@@ -295,6 +295,11 @@ require([
 
   cnt = 0;
 
+  var supplyFeturelayer = null;
+  var shinsuiFeaturelayer = null;
+  var stretch_shinsuiImagelayer = null;
+  var class_shinsuiImagelayer = null;
+  
   var classificationChart = null;
   var timeSeriesChart = null;
   
@@ -339,6 +344,12 @@ require([
 
   lgExpand.content = legend;
   
+  var btnHtml = '<div class="esri-component esri-widget">';
+  btnHtml += '<div id="btnSwitchImage" class="esri-widget--button esri-widget esri-interactive" style="width: 150px">';
+  btnHtml += '<span id="imagelayertype" aria-hidden="true" class="esri-icon esri-icon-layers">Flood(Class)</span>';
+  
+  $(".esri-ui-top-right").append(btnHtml);
+  
   var timeSlider = new TimeSlider({
     container: "timeSliderDiv",
     view: view,
@@ -367,16 +378,18 @@ require([
     view.popup.close();
   });
 
-  var supplyFeturelayer = null;
-  var shinsuiFeaturelayer 
-  = null;
-  var shinsuiImagelayer = null;
+  
 
   map.when(function (layers) {
     supplyFeturelayer = layers.findLayerById("1779fc2549c-layer-5");
 
     shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
-    shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
+    
+    stretch_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796_9364");
+    class_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
+    
+    map.reorder(stretch_shinsuiImagelayer, 0);
+    map.reorder(class_shinsuiImagelayer, 1);
 
     shinsuiFeaturelayer_query(new Date(2021, 3, 1));
     shinsuiImagelayer_query(new Date(2021, 3, 1));
@@ -453,6 +466,19 @@ require([
     $('#body2Div').toggleClass("body-active");
     $('#body2Div').toggleClass("body-nonactive");
   });
+  
+  $("#btnSwitchImage").click(function(e){
+    
+    if (e.target.textContent == "Flood(stretch)") {
+      $('#imagelayertype').text("Flood(Class)");
+      stretch_shinsuiImagelayer.visible = true;
+      class_shinsuiImagelayer.visible = false;
+    } else {
+      $('#imagelayertype').text("Flood(stretch)");
+      stretch_shinsuiImagelayer.visible = false;
+      class_shinsuiImagelayer.visible = true;
+    }
+  });
 
   function shinsuiFeaturelayer_query(date){
 
@@ -469,7 +495,8 @@ require([
     var mr = new MosaicRule({
       where: "NAME='" + formatDate(date, 'yyyyMMdd') + "'"
     }); 
-    shinsuiImagelayer.mosaicRule = mr;
+    class_shinsuiImagelayer.mosaicRule = mr;
+    stretch_shinsuiImagelayer.mosaicRule = mr;
 
   }
 
