@@ -365,7 +365,7 @@ require([
   timeSlider.watch("values", function(values){
     var str_date = values[0].getFullYear() + "/" + (values[0].getMonth()+1) + "/" + values[0].getDate();
 
-    shinsuiFeaturelayer_query(values[0]);
+    //shinsuiFeaturelayer_query(values[0]);
     shinsuiImagelayer_query(values[0]);
     drawClassificationChart(values[0]);
     
@@ -389,7 +389,9 @@ require([
     routeFeturelayer = layers.findLayerById("BUS_MASTER_FS_v02_1838");
 
     shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
-    shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
+    
+    //shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
+    shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796_4922");
     
     map.reorder(shinsuiImagelayer, 0);
 
@@ -399,7 +401,7 @@ require([
 
     getSection_Staff_List();
     
-    shinsuiFeaturelayer_query(new Date(2021, 3, 1));
+    //shinsuiFeaturelayer_query(new Date(2021, 3, 1));
     shinsuiImagelayer_query(new Date(2021, 3, 1));
     
     absenceleaders_query(new Date(2021, 3, 1));
@@ -427,9 +429,10 @@ require([
 
         let value = event.target.id.split(',');
 
-
         var query = notavailablerouteFeturelayer.createQuery();
         query.where = "ROUTE_ID=" + value[0] + " AND OPERATINGDAY ='" + value[1] + "'";
+        query.maxAllowableOffset = 1;
+        
         notavailablerouteFeturelayer.queryFeatures(query).then(function(result) {
           if (highlightSelect) {
             highlightSelect.remove();
@@ -438,12 +441,14 @@ require([
           var feature = result.features[0];
 
           feature.popupTemplate = notavailablerouteFeturelayer.popupTemplate;
+          layerView.view.popup.highlightEnabled = true;
+          
           layerView.view.popup.open({
             features: [feature],
-            featureMenuOpen: true,
-            updateLocationEnabled: true
+            featureMenuOpen: false,
+            updateLocationEnabled: false
           });
-
+          
           view.goTo(
             {
               target: feature.geometry
@@ -758,14 +763,21 @@ require([
       }
 
       //初期化
-      for(var i = 0; i< features.length; i++) {
-        var date = new Date(features[i].attributes["OPERATINGDAY"]);
-        var date_txt = formatDate(date, "MM/dd");
+      var min = new Date(features[0].attributes["OPERATINGDAY"]);
+      var max = new Date(features[features.length-1].attributes["OPERATINGDAY"]);
+      var current = min;
+      while(current <= max) {
+      //for(var i = 0; i< features.length; i++) {
+        //var date = new Date(features[i].attributes["OPERATINGDAY"]);
+        var date_txt = formatDate(current, "MM/dd");
         if (labels.indexOf(date_txt) == -1) {
           labels.push(date_txt);
           available_list[date_txt] = staff_count;
           notavailable_list[date_txt] = 0;
         }
+        
+        var newDate = current.setDate(current.getDate() + 1);
+        current = new Date(newDate);
       }
 
       //件数の取得
@@ -886,6 +898,7 @@ require([
     query.outFields = [
       "*"
     ];
+    query.orderByFields = "STAFF_ID";
 
     staffCommutingTable.queryFeatures(query)
       .then(function(response){
@@ -930,8 +943,9 @@ require([
     query.outFields = [
       "*"
     ];
+    query.orderByFields = "ROUTE_ID";
     query.returnGeometry = false;
-
+    
     notavailablerouteFeturelayer.queryFeatures(query)
       .then(function(response){
       var features = response.features;
@@ -965,15 +979,17 @@ require([
   
   function suspend_route_addgraphic(){
 
-    notavailablerouteGraphicsLayer.removeAll();
-    
     var query = routeFeturelayer.createQuery();
 
     query.where = "1=1";
-    query.outFields = ["ROUTE_ID"];
+    query.outFields = ["*"];
+    query.maxAllowableOffset = 0.001;
 
     routeFeturelayer.queryFeatures(query)
       .then(function(response){
+      
+      notavailablerouteGraphicsLayer.removeAll();
+      
       var features = response.features;
       
       for(var i = 0; i< features.length; i++) {
@@ -990,6 +1006,7 @@ require([
         if (suspended_route_ids.indexOf(route_id) != -1) {
           graphic.symbol.color = "red"; 
         }
+        
         notavailablerouteGraphicsLayer.add(graphic);
       }
     });
