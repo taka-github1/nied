@@ -90,6 +90,14 @@ body,
   flex-direction: column;
 }
 
+#footerDiv {
+  padding: 0;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
 #absence-of-leaders-Div{
   height: 50%;
   overflow-y: auto;
@@ -110,9 +118,22 @@ body,
   padding: 0px;
 }
 
+#timeSliderValue {
+  min-height: 10%;
+  color: chocolate;
+  font-size: 24px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  min-width: 10%;
+  margin-bottom: 10px;
+}
+
 #timeSliderDiv {
-  height: 10%;
-  width: 100%;
+  height: auto;
+  width: 90%;
   margin-bottom: 10px;
 }
 
@@ -249,6 +270,10 @@ li:hover {
             <div id="classificationChartDiv" class="chartStyle" >
               <canvas id="classificationChartCanvas"/>
             </div>
+            <div>
+              <input type="checkbox" id="check_rate" name="check_rate">
+              <label for="check_rate">Display Rate</label>
+            </div>
           </div>
           <div id="viewDiv"></div>
           <div id="rightDiv">
@@ -258,7 +283,10 @@ li:hover {
             <div>No Data</div>
           </div>
         </div>
-        <div id="timeSliderDiv"></div>
+        <div id="footerDiv">
+          <div id="timeSliderValue">4/1</div>
+          <div id="timeSliderDiv"></div>
+        </div>
       </div>
       <div id="body2Div" class="body-nonactive">
         <span class="subtitle"># of absenting bus commuters by time</span>
@@ -367,7 +395,7 @@ require([
   
   var btnHtml = '<div class="esri-component esri-widget">';
   btnHtml += '<div id="btnSwitchImage" class="esri-widget--button esri-widget esri-interactive" style="width: 150px">';
-  btnHtml += '<span id="imagelayertype" aria-hidden="true" class="esri-icon esri-icon-layers">Flood(Class)</span>';
+  btnHtml += '<span id="imagelayertype" aria-hidden="true" class="esri-icon esri-icon-layers">Flood(Risk)</span>';
   
   $(".esri-ui-top-right").append(btnHtml);
   
@@ -399,6 +427,8 @@ require([
   timeSlider.watch("values", function(values){
     var str_date = values[0].getFullYear() + "/" + (values[0].getMonth()+1) + "/" + values[0].getDate();
 
+    $('#timeSliderValue').text((values[0].getMonth()+1) + "/" + values[0].getDate());
+    
     //shinsuiFeaturelayer_query(values[0]);
     shinsuiImagelayer_query(values[0]);
     drawClassificationChart(values[0]);
@@ -512,12 +542,12 @@ require([
   
   $("#btnSwitchImage").click(function(e){
     
-    if (e.target.textContent == "Flood(stretch)") {
-      $('#imagelayertype').text("Flood(Class)");
+    if (e.target.textContent == "Flood(Hazard)") {
+      $('#imagelayertype').text("Flood(Risk)");
       stretch_shinsuiImagelayer.visible = true;
       class_shinsuiImagelayer.visible = false;
     } else {
-      $('#imagelayertype').text("Flood(stretch)");
+      $('#imagelayertype').text("Flood(Hazard)");
       stretch_shinsuiImagelayer.visible = false;
       class_shinsuiImagelayer.visible = true;
     }
@@ -536,6 +566,11 @@ require([
     }
   });
 
+  //Display Rateのチェック
+  $('#check_rate').on('change', function(){
+    drawClassificationChart( timeSlider.values[0]);
+  });
+  
   //セクションごとの従業員数を取得
   function getSection_Staff_List() {
 
@@ -737,12 +772,22 @@ require([
       var labels = [];
       var available_count = [];
       var notavailable_count = [];
-
+      
+      var display_rate = false;
+      if ($('#check_rate:checked').val() != null) {
+        display_rate = true;
+      }
+      
       //初期化
       labels = Object.keys(section_staff_list);
       for (var i = 0; i< labels.length; i++) {
-        available_list[labels[i]] = section_staff_list[labels[i]];
-        notavailable_list[labels[i]] = 0;
+        if (display_rate == true) {
+          available_list[labels[i]] = 100;
+          notavailable_list[labels[i]] = 0;
+        } else {
+          available_list[labels[i]] = section_staff_list[labels[i]];
+          notavailable_list[labels[i]] = 0;
+        }
       }
 
       //件数の取得
@@ -758,8 +803,13 @@ require([
 
         var count = features[i].attributes["カウント"];
 
-        notavailable_list[section_name] = count;
-        available_list[section_name] = section_staff_list[section_name] - count;
+        if (display_rate == true) {
+          notavailable_list[section_name] = 100 *  count / section_staff_list[section_name];
+          available_list[section_name] = 100 - notavailable_list[section_name];
+        } else {
+          notavailable_list[section_name] = count;
+          available_list[section_name] = section_staff_list[section_name] - count;
+        }
       }
       
       available_count = Object.values(available_list);
@@ -778,7 +828,22 @@ require([
     if (classificationChart != null) {
       classificationChart.destroy();
     }
+    
+    var display_rate = false;
+    if ($('#check_rate:checked').val() != null) {
+      display_rate = true;
+    }
 
+    var xlabel = "People";
+    var xUnit = "";
+    var xStepSize = 10;
+    
+    if (display_rate == true) {
+      xlabel = "Rate";
+      xUnit = "%";
+      xStepSize = 50;
+    }
+    
     var datasets = [];
 
     datasets.push({
@@ -835,10 +900,10 @@ require([
 
 
                 if(i==0){
-                  data = " " + dataset.data[index] + " Commuting";
+                  data = " " + dataset.data[index] + xUnit + " Commuting";
                   ctx.fillText(data, bar._model.base, bar._model.y+4);
                 } else {
-                  data = " " + dataset.data[index] + " Not Commuting ";
+                  data = " " + dataset.data[index] + xUnit + " Not Commuting ";
                   ctx.fillText(data, bar._model.base, bar._model.y+4);
                 }
               }),this)
@@ -849,12 +914,12 @@ require([
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: 'People',
+              labelString: xlabel,
               fontSize: 12
             },
             ticks: {
               beginAtZero: true,
-              stepSize: 10,
+              stepSize: xStepSize,
               callback: function(value, index, values){
                 return  value
               }
