@@ -1,21 +1,12 @@
 
 
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="ja" >
 
 <head>
 
   <meta charset="UTF-8">
-  
-<link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
-<meta name="apple-mobile-web-app-title" content="CodePen">
-
-<link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
-
-<link rel="mask-icon" type="" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
-
-
-  <title>CodePen - サプライチェーン解析_v01</title>
+  <title>サプライチェーン解析</title>
   
   
   
@@ -60,21 +51,21 @@ body,
   padding: 5px;
 }
 
-#centermainDiv {
+#timeslider_centermainDiv {
   height: 90%;
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 
-#leftDiv {
+#timeslider_leftDiv {
   width: 30%;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-#viewDiv {
+#timeslider_mapviewDiv {
   padding: 0;
   margin: 0;
   height: 100%;
@@ -82,12 +73,20 @@ body,
   background-color: black;
 }
 
-#rightDiv {
+#timeslider_rightDiv {
   padding: 0;
   height: 100%;
   width: 30%;
   display: flex;
   flex-direction: column;
+}
+
+#timeslider_footerDiv {
+  padding: 0;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .chartStyle {
@@ -100,9 +99,20 @@ body,
   padding: 0px;
 }
 
+#timeSliderValue {
+  min-height: 10%;
+  color: chocolate;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  -webkit-justify-content: center;
+  min-width: 10%;
+  margin-bottom: 10px;
+}
+
 #timeSliderDiv {
-  height: 10%;
-  width: 100%;
+  height: auto;
+  width: 90%;
   margin-bottom: 10px;
 }
 
@@ -189,6 +199,29 @@ li {
 li:hover {
   background-color: rgba(0, 0, 120, 0.5);
 }
+
+#alltime_centermainDiv {
+  height: 90%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#alltime_mapviewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 50%;
+  background-color: black;
+}
+
+#alltime_rightDiv {
+  padding: 0;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
 </style>
 
   
@@ -207,16 +240,16 @@ li:hover {
           content="initial-scale=1,maximum-scale=1,user-scalable=no"
           />
     <title>
-      TimeSlider
+      サプライチェーンリスク解析
     </title>
 
     <link
           rel="stylesheet"
-          href="https://js.arcgis.com/4.16/esri/themes/dark-red/main.css"
+          href="https://js.arcgis.com/4.18/esri/themes/dark-red/main.css"
           />
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <script src="https://js.arcgis.com/4.16/"></script>
+    <script src="https://js.arcgis.com/4.18/"></script>
   </head>
 
   <body>
@@ -227,28 +260,56 @@ li:hover {
         <button id="change_body" class="change_body">All Time</button>
       </div>
       <div id="body1Div" class="body-active">
-        <div id="centermainDiv">
-          <div id="leftDiv">
+        <div id="timeslider_centermainDiv">
+          <div id="timeslider_leftDiv">
             <span class="subtitle">Operation Supply Chain</span>
             <div id="classificationChartDiv" class="chartStyle">
               <canvas id="classificationChartCanvas"/>
             </div>
-            <!--div id="layerListDiv"></div>-->
+            <div>
+              <input type="checkbox" id="check_rate" name="check_rate">
+              <label for="check_rate">Display Rate</label>
+            </div>
           </div>
-          <div id="viewDiv"></div>
-          <div id="rightDiv">
+          <div id="timeslider_mapviewDiv"></div>
+          <div id="timeslider_rightDiv">
             <span class="subtitle">Suspended Supply Chain</span>
             <ul id="supply-chain-list">
             </ul>
             <div>No Data</div>
           </div>
         </div>
-        <div id="timeSliderDiv"></div>
+        <div id="timeslider_footerDiv">
+          <div id="timeSliderValue">4/1</div>
+          <div id="timeSliderDiv"></div>
+        </div>
       </div>
       <div id="body2Div" class="body-nonactive">
-        <span class="subtitle">Supply Chain Time Transition</span>
-        <div id="timeSeriesChartDiv" class="chartStyle">
-          <canvas id="timeSeriesChartCanvas"/>
+        <div id="alltime_centermainDiv">
+          <div id="alltime_mapviewDiv"></div>
+          <div id="alltime_rightDiv">
+            <span class="subtitle">Supply Chain Time Transition</span>
+            <div id="timeSeriesChartDiv" class="chartStyle">
+              <canvas id="timeSeriesChartCanvas"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="timeslider_FloodDiv" class="esri-component esri-widget">
+        <div class="esri-widget--button esri-widget esri-interactive switchImage" 
+             style="width: 150px">
+          <span class="esri-icon esri-icon-layers imagelayertype">Flood(Risk)</span> 
+        </div>
+      </div>
+      <div id="timeslider_TypeDiv" class="esri-component esri-widget">
+        <div class="esri-widget--button esri-widget esri-interactive switchType" style="width: 150px">
+          <span class="esri-icon esri-icon-layers changetype">Summary</span>
+        </div>
+      </div>
+      <div id="alltime_FloodDiv" class="esri-component esri-widget">
+        <div class="esri-widget--button esri-widget esri-interactive switchImage" 
+             style="width: 150px">
+          <span class="esri-icon esri-icon-layers imagelayertype">Flood(Risk)</span> 
         </div>
       </div>
     </div>
@@ -263,16 +324,11 @@ require([
   "esri/views/MapView",
   "esri/widgets/Legend",
   "esri/widgets/Expand",
-  "esri/widgets/LayerList",
   "esri/widgets/TimeSlider",
-  "esri/core/watchUtils",
-  "esri/core/promiseUtils",
   "esri/layers/ImageryLayer",
+  "esri/layers/GraphicsLayer",
+  "esri/Graphic",
   "esri/tasks/support/Query",
-  "esri/tasks/QueryTask",
-  "esri/renderers/ClassBreaksRenderer",
-  "esri/layers/support/RasterFunction",
-  "esri/renderers/RasterColormapRenderer",
   "esri/layers/support/MosaicRule"
 ], function (
         WebMap,
@@ -280,40 +336,49 @@ require([
          MapView,
          Legend,
          Expand,
-         LayerList,
          TimeSlider,
-         watchUtils,
-         promiseUtils,
          ImageryLayer,
+         GraphicsLayer,
+         Graphic,
          Query,
-         QueryTask,
-         ClassBreaksRenderer,
-         RasterFunction,
-         RasterColormapRenderer,
          MosaicRule
         ) {
 
   cnt = 0;
 
   var supplyFeturelayer = null;
-  var shinsuiFeaturelayer = null;
-  var stretch_shinsuiImagelayer = null;
-  var class_shinsuiImagelayer = null;
-  
+  var supply_availableFeturelayer = null;
+  var timeslider_stretch_shinsuiImagelayer = null;
+  var timeslider_class_shinsuiImagelayer = null;
+  var summary_notavailableGraphicsLayer = null;
+
+  var alltime_supplyFeturelayer = null;
+  var alltime_supply_availableFeturelayer = null;
+  var alltime_stretch_shinsuiImagelayer = null;
+  var alltime_class_shinsuiImagelayer = null;
+  var alltime_summary_notavailableGraphicsLayer = null;
+
   var classificationChart = null;
   var timeSeriesChart = null;
   
+  var summary_suspended_ids = [];
+  var alltime_summary_suspended_ids = [];
+
   let highlightSelect;
 
-  const map = new WebMap({
+  const timeslider_map = new WebMap({
     portalItem: {
-      id: "feaff889ee074c74834857572a20a513"
+      id: "f1dcdef0e1ea41308b756dfb29079897"
     }
   });
+  
+  summary_notavailableGraphicsLayer = new GraphicsLayer();
+  timeslider_map.add(summary_notavailableGraphicsLayer);
+  summary_notavailableGraphicsLayer.visible = false;
 
-  const view = new MapView({
-    container: "viewDiv",
-    map: map,
+  const timeslider_view = new MapView({
+    container: "timeslider_mapviewDiv",
+    map: timeslider_map,
     popup: {
       dockEnabled: true,
       dockOptions: {
@@ -324,35 +389,51 @@ require([
     }
   });
 
-  var layerlist = new LayerList({
-    view: view,
-    //container: "layerListDiv",
-    respectLayerVisibility: false
+  timeslider_view.ui.add("timeslider_FloodDiv", "top-right");
+  timeslider_view.ui.add("timeslider_TypeDiv", "top-right");
+
+  const alltime_map = new WebMap({
+    portalItem: {
+      id: "feaff889ee074c74834857572a20a513"
+    }
+  });
+  
+  alltime_summary_notavailableGraphicsLayer = new GraphicsLayer();
+  alltime_map.add(alltime_summary_notavailableGraphicsLayer);
+
+  const alltime_view = new MapView({
+    container: "alltime_mapviewDiv",
+    map: alltime_map, 
+    popup: {
+      dockEnabled: true,
+      dockOptions: {
+        buttonEnabled: false,
+        breakpoint: false,
+        position: "top-left"
+      }
+    }
   });
 
+  alltime_view.ui.add("alltime_FloodDiv", "top-right");
+
   var lgExpand = new Expand({
-    view: view,
+    view: timeslider_view,
     expanded: false,
     mode : "floating"
   });
-  view.ui.add(lgExpand, "bottom-right");
-  
+  timeslider_view.ui.add(lgExpand, "bottom-right");
+
   var legend = new Legend({
-    view: view,
+    view: timeslider_view,
     respectLayerVisibility: true
   });
 
   lgExpand.content = legend;
-  
-  var btnHtml = '<div class="esri-component esri-widget">';
-  btnHtml += '<div id="btnSwitchImage" class="esri-widget--button esri-widget esri-interactive" style="width: 150px">';
-  btnHtml += '<span id="imagelayertype" aria-hidden="true" class="esri-icon esri-icon-layers">Flood(Class)</span>';
-  
-  $(".esri-ui-top-right").append(btnHtml);
-  
+
+
   var timeSlider = new TimeSlider({
     container: "timeSliderDiv",
-    view: view,
+    view: timeslider_view,
     fullTimeExtent: {
       start: new Date(2021, 3, 1, 9, 0),
       end: new Date(2021, 11, 31, 9, 0)
@@ -368,43 +449,72 @@ require([
   });
 
   timeSlider.watch("values", function(values){
+
+    if (timeslider_class_shinsuiImagelayer == null || timeslider_stretch_shinsuiImagelayer == null ||
+        supply_availableFeturelayer == null) {
+      return;
+    }
+
     var str_date = values[0].getFullYear() + "/" + (values[0].getMonth()+1) + "/" + values[0].getDate();
+
+    $('#timeSliderValue').text((values[0].getMonth()+1) + "/" + values[0].getDate());
 
     shinsuiFeaturelayer_query(values[0]);
     shinsuiImagelayer_query(values[0]);
     drawClassificationChart(values[0]);
     suspendlist_query(values[0]);
+    getSuspend_Graphic(values[0])
 
-    view.popup.close();
+    timeslider_view.popup.close();
   });
 
-  
+  timeslider_map.when(function (layers) {
+    supplyFeturelayer = layers.layers.find(
+      value => value.title == "サプライチェーン");
+    supply_availableFeturelayer = layers.layers.find(
+      value => value.title == "Supply Chain Available");
+    timeslider_stretch_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Hazard)");
+    timeslider_class_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Risk)");
 
-  map.when(function (layers) {
-    supplyFeturelayer = layers.findLayerById("1779fc2549c-layer-5");
-
-    shinsuiFeaturelayer = layers.findLayerById("1779e591c0c-layer-33");
-    
-    stretch_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796_9364");
-    class_shinsuiImagelayer = layers.findLayerById("satreps_thai_shinsui_7796");
-    
-    map.reorder(stretch_shinsuiImagelayer, 0);
-    map.reorder(class_shinsuiImagelayer, 1);
+    timeslider_map.reorder(timeslider_stretch_shinsuiImagelayer, 0);
+    timeslider_map.reorder(timeslider_class_shinsuiImagelayer, 1);
 
     shinsuiFeaturelayer_query(new Date(2021, 3, 1));
     shinsuiImagelayer_query(new Date(2021, 3, 1));
     drawClassificationChart(new Date(2021, 3, 1));
     suspendlist_query(new Date(2021, 3, 1));
-    
+    getSuspend_Graphic(new Date(2021, 3, 1))
+
     drawTimeSeriesChart();
   });
 
-  view.when(function() {
+  alltime_map.when(function (layers) {
+    //レイヤー取得
+    alltime_supplyFeturelayer = layers.layers.find(
+      value => value.title == "サプライチェーン");
+    alltime_supply_availableFeturelayer = layers.layers.find(
+      value => value.title == "サプライヤー稼働状況");
+    alltime_stretch_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Hazard)");
+
+    alltime_class_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Risk)");
+
+    alltime_map.reorder(alltime_stretch_shinsuiImagelayer, 0);
+    alltime_map.reorder(alltime_class_shinsuiImagelayer, 1);
+    
+    getalltimeSuspend_Graphic();
+
+  });
+
+  timeslider_view.when(function() {
 
     //Suspend Suppy Chainリスト選択
-    view.whenLayerView(supplyFeturelayer).then(function(layerView) {
+    timeslider_view.whenLayerView(supply_availableFeturelayer).then(function(layerView) {
       $('body').on('click', '#supply-chain-list li', function(e){
-        
+
         for (let li of $('li')) {
           li.classList.remove("li_selected");
         }
@@ -415,27 +525,26 @@ require([
 
       function feature_highlight(event) {
 
-
         let value = event.target.id.split(',');
 
 
-        var query = supplyFeturelayer.createQuery();
+        var query = supply_availableFeturelayer.createQuery();
         query.where = "BASE_ID=" + value[0] + " AND OPERATINGDAY ='" + value[1] + "'";
-        supplyFeturelayer.queryFeatures(query).then(function(result) {
+        supply_availableFeturelayer.queryFeatures(query).then(function(result) {
           if (highlightSelect) {
             highlightSelect.remove();
           }
 
           var feature = result.features[0];
 
-          feature.popupTemplate = supplyFeturelayer.popupTemplate;
+          feature.popupTemplate = supply_availableFeturelayer.popupTemplate;
           layerView.view.popup.open({
             features: [feature],
             featureMenuOpen: true,
             updateLocationEnabled: true
           });
 
-          view.goTo(
+          timeslider_view.goTo(
             {
               target: feature.geometry
             },
@@ -453,9 +562,9 @@ require([
     });
   });
 
-  
+
   $('#change_body').click(function(e){
-    
+
     if (e.target.textContent == "All Time") {
       $('#change_body').text("Time Slider");
     } else {
@@ -466,28 +575,55 @@ require([
     $('#body2Div').toggleClass("body-active");
     $('#body2Div').toggleClass("body-nonactive");
   });
-  
-  $("#btnSwitchImage").click(function(e){
-    
-    if (e.target.textContent == "Flood(stretch)") {
-      $('#imagelayertype').text("Flood(Class)");
-      stretch_shinsuiImagelayer.visible = true;
-      class_shinsuiImagelayer.visible = false;
+
+  $(".switchImage").click(function(e){
+    if (e.target.textContent == "Flood(Hazard)") {
+      $('.imagelayertype').text("Flood(Risk)");
+      timeslider_stretch_shinsuiImagelayer.visible = true;
+      timeslider_class_shinsuiImagelayer.visible = false;
+
+      alltime_stretch_shinsuiImagelayer.visible = true;
+      alltime_class_shinsuiImagelayer.visible = false;
+    } else if (e.target.textContent == "Flood(Risk)") {
+      $('.imagelayertype').text("Flood(None)");
+      timeslider_stretch_shinsuiImagelayer.visible = false;
+      timeslider_class_shinsuiImagelayer.visible = true;
+
+      alltime_stretch_shinsuiImagelayer.visible = false;
+      alltime_class_shinsuiImagelayer.visible = true;
     } else {
-      $('#imagelayertype').text("Flood(stretch)");
-      stretch_shinsuiImagelayer.visible = false;
-      class_shinsuiImagelayer.visible = true;
+      $('.imagelayertype').text("Flood(Hazard)");
+      timeslider_stretch_shinsuiImagelayer.visible = false;
+      timeslider_class_shinsuiImagelayer.visible = false;
+
+      alltime_stretch_shinsuiImagelayer.visible = false;
+      alltime_class_shinsuiImagelayer.visible = false;
     }
+  });
+
+  $(".switchType").click(function(e){
+
+    if (e.target.textContent == "Summary") {
+      $('.changetype').text("Suspend");
+      summary_notavailableGraphicsLayer.visible = true;
+      supply_availableFeturelayer.visible = false;
+    } else {
+      $('.changetype').text("Summary");
+      summary_notavailableGraphicsLayer.visible = false;
+      supply_availableFeturelayer.visible = true;
+    }
+  });
+  
+  //Display Rateのチェック
+  $('#check_rate').on('change', function(){
+    drawClassificationChart(timeSlider.values[0]);
   });
 
   function shinsuiFeaturelayer_query(date){
 
     var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
 
-    supplyFeturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
-
-    shinsuiFeaturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
-
+    supply_availableFeturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
   }
 
   function shinsuiImagelayer_query(date){
@@ -495,8 +631,8 @@ require([
     var mr = new MosaicRule({
       where: "NAME='" + formatDate(date, 'yyyyMMdd') + "'"
     }); 
-    class_shinsuiImagelayer.mosaicRule = mr;
-    stretch_shinsuiImagelayer.mosaicRule = mr;
+    timeslider_class_shinsuiImagelayer.mosaicRule = mr;
+    timeslider_stretch_shinsuiImagelayer.mosaicRule = mr;
 
   }
 
@@ -504,7 +640,7 @@ require([
 
     var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
 
-    var query = supplyFeturelayer.createQuery();
+    var query = supply_availableFeturelayer.createQuery();
 
     //稼働のみ
     query.where = "OPERATINGDAY = '" + str_date + "'";
@@ -514,7 +650,7 @@ require([
 
     query.groupByFieldsForStatistics = "BASE_TYPE,AVAILABLE";
     query.orderByFields = "BASE_TYPE,AVAILABLE";
-    
+
     query.outStatistics = [
       {
         statisticType: "count",
@@ -523,7 +659,7 @@ require([
       }
     ]
 
-    supplyFeturelayer.queryFeatures(query)
+    supply_availableFeturelayer.queryFeatures(query)
       .then(function(response){
       var features = response.features;
 
@@ -532,6 +668,11 @@ require([
       var labels = [];
       var available_count = [];
       var notavailable_count = [];
+
+      var display_rate = false;
+      if ($('#check_rate:checked').val() != null) {
+        display_rate = true;
+      }
 
       //初期化
       for(var i = 0; i< features.length; i++) {
@@ -542,22 +683,31 @@ require([
           notavailable_list[base_type] = 0;
         }
       }
-      
+
       //件数の取得
       for(var i = 0; i< features.length; i++) {
         var base_type = features[i].attributes["BASE_TYPE"];
         var available = features[i].attributes["AVAILABLE"];
         var count = features[i].attributes["カウント"];
-        
+
         if (available == 0) {
           available_list[base_type] = count;
         } else {
           notavailable_list[base_type] = count;
         }
       }
-      
+
       available_count = Object.values(available_list);
       notavailable_count = Object.values(notavailable_list);
+
+      //Rateの計算
+      if (display_rate == true) {
+        for (var i = 0; i< available_count.length; i++) {
+          var sum = available_count[i] + notavailable_count[i];
+          available_count[i] = Math.floor(100 * available_count[i] / sum);
+          notavailable_count[i] = Math.ceil(100 * notavailable_count[i] / sum);
+        }
+      }
 
       update_classificationChart(labels, available_count, notavailable_count);
 
@@ -573,13 +723,28 @@ require([
       classificationChart.destroy();
     }
 
+    var display_rate = false;
+    if ($('#check_rate:checked').val() != null) {
+      display_rate = true;
+    }
+
+    var xlabel = "Place";
+    var xUnit = "";
+    var xStepSize = 10;
+
+    if (display_rate == true) {
+      xlabel = "Rate";
+      xUnit = "%";
+      xStepSize = 50;
+    }
+
     var datasets = [];
 
     datasets.push({
       data: available_count,
       backgroundColor: "rgba(100,255,150,0.5)"
     });
-    
+
     datasets.push({
       data: notavailable_count,
       backgroundColor: "rgba(255,0,0,0.5)"
@@ -626,13 +791,13 @@ require([
             Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
               var meta = chartInstance.controller.getDatasetMeta(i);
               Chart.helpers.each(meta.data.forEach(function (bar, index) {
-                
+
 
                 if(i==0){
-                  data = " " + dataset.data[index] + " Available";
+                  data = " " + dataset.data[index] + xUnit + " Available";
                   ctx.fillText(data, bar._model.base, bar._model.y+4);
                 } else {
-                  data = " " + dataset.data[index] + " Suspended ";
+                  data = " " + dataset.data[index] + xUnit + " Suspended ";
                   ctx.fillText(data, bar._model.base, bar._model.y+4);
                 }
               }),this)
@@ -643,12 +808,12 @@ require([
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: 'Place',
+              labelString: xlabel,
               fontSize: 12
             },
             ticks: {
               beginAtZero: true,
-              stepSize: 10,
+              stepSize: xStepSize,
               callback: function(value, index, values){
                 return  value
               }
@@ -677,11 +842,11 @@ require([
       }
     });
   }
-  
-  
+
+
   function drawTimeSeriesChart() {
 
-    var query = supplyFeturelayer.createQuery();
+    var query = supply_availableFeturelayer.createQuery();
 
     //稼働のみ
     query.where = "1=1";
@@ -691,7 +856,7 @@ require([
 
     query.groupByFieldsForStatistics = "OPERATINGDAY,AVAILABLE";
     query.orderByFields = "OPERATINGDAY,AVAILABLE";
-    
+
     query.outStatistics = [
       {
         statisticType: "count",
@@ -700,7 +865,7 @@ require([
       }
     ]
 
-    supplyFeturelayer.queryFeatures(query)
+    supply_availableFeturelayer.queryFeatures(query)
       .then(function(response){
       var features = response.features;
 
@@ -709,7 +874,7 @@ require([
       var labels = [];
       var available_count = [];
       var notavailable_count = [];
-      
+
       //初期化
       for(var i = 0; i< features.length; i++) {
         var date = new Date(features[i].attributes["OPERATINGDAY"]);
@@ -720,21 +885,21 @@ require([
           notavailable_list[date_txt] = 0;
         }
       }
-      
+
       //件数の取得
       for(var i = 0; i< features.length; i++) {
         var date = new Date(features[i].attributes["OPERATINGDAY"]);
         var date_txt = formatDate(date, "MM/dd");
         var available = features[i].attributes["AVAILABLE"];
         var count = features[i].attributes["カウント"];
-        
+
         if (available == 0) {
           available_list[date_txt] = count;
         } else {
           notavailable_list[date_txt] = count;
         }
       }
-      
+
       available_count = Object.values(available_list);
       notavailable_count = Object.values(notavailable_list);
 
@@ -743,7 +908,7 @@ require([
     });
 
   }
-  
+
   function update_timeSeriesChart(labels, available_count, notavailable_count){
 
     var ctx = document.getElementById("timeSeriesChartCanvas").getContext('2d');
@@ -759,7 +924,7 @@ require([
       data: available_count,
       backgroundColor: "rgba(100,255,150,0.8)"
     });
-    
+
     datasets.push({
       label: "Suspended Count",
       data: notavailable_count,
@@ -808,7 +973,7 @@ require([
                 return value
               },
               autoSkip: true,
-              maxTicksLimit: 30
+              maxTicksLimit: 2
             }
           }],
           yAxes: [{
@@ -836,7 +1001,7 @@ require([
 
     var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
 
-    var query = supplyFeturelayer.createQuery();
+    var query = supply_availableFeturelayer.createQuery();
 
     //不稼働のみ
     query.where = "OPERATINGDAY = '" + str_date + "' AND AVAILABLE = 1";
@@ -844,7 +1009,7 @@ require([
       "*"
     ];
 
-    supplyFeturelayer.queryFeatures(query)
+    supply_availableFeturelayer.queryFeatures(query)
       .then(function(response){
       var features = response.features;
 
@@ -855,6 +1020,9 @@ require([
         var name = features[i].attributes["NAME"];
         var base_type = features[i].attributes["BASE_TYPE"];
         var depth = features[i].attributes["INUNDATION_DEPTH"];
+
+        depth = Math.round(depth * 100) / 100;
+
         var operatingday = new Date(features[i].attributes["OPERATINGDAY"]);
 
         var str_operatingday = operatingday.getFullYear() + "/" + (operatingday.getMonth()+1) + "/" + operatingday.getDate();
@@ -866,7 +1034,222 @@ require([
       }
     });
   }
+  
+  function getSuspend_Graphic(date) {
+    
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
 
+    var query = supply_availableFeturelayer.createQuery();
+    //不稼働のみ
+    query.where = "OPERATINGDAY <= '" + str_date + "' AND AVAILABLE = 1";
+    query.outFields = [
+      "BASE_ID"
+    ];
+    query.returnGeometry = false;
+
+    query.groupByFieldsForStatistics = "BASE_ID";
+    query.orderByFields = "BASE_ID";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    supply_availableFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      summary_suspended_ids = [];
+      
+      for(var i = 0; i< features.length; i++) {
+        var base_id = features[i].attributes["BASE_ID"];
+        var count = features[i].attributes["カウント"];
+        summary_suspended_ids[base_id] = count;
+      }
+      summary_notavailable_addgraphic();
+    });
+  }
+  
+  function summary_notavailable_addgraphic(){
+
+    var query = supplyFeturelayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["BASE_ID, NAME"];
+
+    supplyFeturelayer.queryFeatures(query)
+      .then(function(response){
+      
+      summary_notavailableGraphicsLayer.removeAll();
+      
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var base_id = features[i].attributes["BASE_ID"];
+        
+        var graphic = features[i];
+        graphic.symbol = {
+          type: "simple-marker",
+          color: "green",
+          size: "12px",
+          style: "circle",
+        };
+
+        var suspended_ids = Object.keys(summary_suspended_ids);
+
+        if (suspended_ids.length != 0 && suspended_ids.indexOf(base_id) == -1) {
+          graphic.attributes["COUNT"] = summary_suspended_ids[base_id];
+
+          if (summary_suspended_ids[base_id] > 180) { 
+            graphic.symbol.color = "red";
+          } else if (summary_suspended_ids[base_id] > 150) { 
+            graphic.symbol.color = "orange";
+          } else if (summary_suspended_ids[base_id] > 120) { 
+            graphic.symbol.color = "yellow";
+          } else { 
+            graphic.symbol.color = "green";
+          }             
+        } else {
+          graphic.attributes["COUNT"] = 0;
+        }
+
+        graphic.popupTemplate = {
+          title: "{NAME}",
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "BASE_ID",
+                  label: "BASE_ID"
+                },
+                {
+                  fieldName: "NAME",
+                  label: "NAME"
+                },
+                {
+                  fieldName: "COUNT",
+                  label: "Suspend Days"
+                }
+              ]
+            }
+          ]
+        };
+        
+        summary_notavailableGraphicsLayer.add(graphic);
+      }
+    });
+  }
+  
+  function getalltimeSuspend_Graphic() {
+
+    var query = alltime_supply_availableFeturelayer.createQuery();
+
+    //不稼働のみ
+    query.where = "AVAILABLE = 1";
+    query.outFields = [
+      "BASE_ID"
+    ];
+    query.returnGeometry = false;
+
+    query.groupByFieldsForStatistics = "BASE_ID";
+    query.orderByFields = "BASE_ID";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    alltime_supply_availableFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      alltime_summary_suspended_ids = {};
+
+      for(var i = 0; i< features.length; i++) {
+        var base_id = features[i].attributes["BASE_ID"];
+        var count = features[i].attributes["カウント"];
+        alltime_summary_suspended_ids[base_id] = count;
+      }
+      
+      alltime_summary_notavailable_addgraphic();
+    });
+  }
+  
+  function alltime_summary_notavailable_addgraphic(){
+
+    var query = alltime_supplyFeturelayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["BASE_ID, NAME"];
+
+    alltime_supplyFeturelayer.queryFeatures(query)
+      .then(function(response){
+      
+      alltime_summary_notavailableGraphicsLayer.removeAll();
+      
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var base_id = features[i].attributes["BASE_ID"];
+        
+        var graphic = features[i];
+        graphic.symbol = {
+          type: "simple-marker",
+          color: "green",
+          size: "12px",
+          style: "circle",
+        };
+
+        var suspended_ids = Object.keys(alltime_summary_suspended_ids);
+
+        if (suspended_ids.length != 0 && suspended_ids.indexOf(base_id) == -1) {
+          graphic.attributes["COUNT"] = alltime_summary_suspended_ids[base_id];
+
+          if (alltime_summary_suspended_ids[base_id] > 180) { 
+            graphic.symbol.color = "red";
+          } else if (alltime_summary_suspended_ids[base_id] > 150) { 
+            graphic.symbol.color = "orange";
+          } else if (alltime_summary_suspended_ids[base_id] > 120) { 
+            graphic.symbol.color = "yellow";
+          } else { 
+            graphic.symbol.color = "green";
+          }             
+        } else {
+          graphic.attributes["COUNT"] = 0;
+        }
+
+        graphic.popupTemplate = {
+          title: "{NAME}",
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "BASE_ID",
+                  label: "BASE_ID"
+                },
+                {
+                  fieldName: "NAME",
+                  label: "NAME"
+                },
+                {
+                  fieldName: "COUNT",
+                  label: "Suspend Days"
+                }
+              ]
+            }
+          ]
+        };
+        
+        alltime_summary_notavailableGraphicsLayer.add(graphic);
+      }
+    });
+  }
 });
 
 
