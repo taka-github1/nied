@@ -2,13 +2,13 @@
   {
     "story_id": 1,
     "story_label": "想定シナリオ①",
-    "timeslider_mapid" : "f1dcdef0e1ea41308b756dfb29079897",
-    "alltime_map": "f90deab4fac94f21bd8770d5d2e8745c"
+    "timeslider_mapid" : "e01b23122e3944aca17e11a1f0cf241d",
+    "alltime_map": "d4721a61b7b84cca8931c01c200ee340"
   },
   {
     "story_id": 2,
     "story_label": "テストシナリオ",
-    "timeslider_mapid" : "f1dcdef0e1ea41308b756dfb29079897",
-    "alltime_map": "f90deab4fac94f21bd8770d5d2e8745c"
+    "timeslider_mapid" : "e107e0b13a9547c0a2acdf1b10fa5beb",
+    "alltime_map": "d4721a61b7b84cca8931c01c200ee340"
   }
 ]
