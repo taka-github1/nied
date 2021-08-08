@@ -3,12 +3,14 @@
     "story_id": 1,
     "story_label": "想定シナリオ①",
     "timeslider_mapid" : "e01b23122e3944aca17e11a1f0cf241d",
-    "alltime_map": "d4721a61b7b84cca8931c01c200ee340"
+    "alltime_map": "d4721a61b7b84cca8931c01c200ee340",
+    "shinsuiImage_url": "https://nied-labo.bosai.go.jp/webgis/rest/services/satreps/satreps_thai_shinsui_r03/ImageServer"
   },
   {
     "story_id": 2,
     "story_label": "テストシナリオ",
     "timeslider_mapid" : "e107e0b13a9547c0a2acdf1b10fa5beb",
-    "alltime_map": "d4721a61b7b84cca8931c01c200ee340"
+    "alltime_map": "d4721a61b7b84cca8931c01c200ee340",
+    "shinsuiImage_url": "https://nied-labo.bosai.go.jp/webgis/rest/services/satreps/satreps_thai_shinsui/ImageServer"
   }
 ]
