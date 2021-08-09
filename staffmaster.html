@@ -172,6 +172,7 @@
         });
         IdentityManager.registerOAuthInfos([info]);
 
+        /*
         IdentityManager
           .checkSignInStatus(info.portalUrl + "/sharing")
           .then(() => {
@@ -201,9 +202,10 @@
             //anonPanelElement.style.display = "none";
             //personalPanelElement.style.display = "block";
 
-            portal.queryItems(queryParams).then(createGallery);
+            //portal.queryItems(queryParams).then(createGallery);
           });
         }
+        */
 
         var featureLayer_url = "https://services6.arcgis.com/YweFsHK2qzfki4O5/arcgis/rest/services/STAFF_MASTER_TBL_v02/FeatureServer/0";
         var featureLayer = new FeatureLayer({
