@@ -170,9 +170,9 @@
           appId: "vXLUw3MXtt2k7iwa",
           popup: false
         });
-        esriId.registerOAuthInfos([info]);
+        IdentityManager.registerOAuthInfos([info]);
 
-        esriId
+        IdentityManager
           .checkSignInStatus(info.portalUrl + "/sharing")
           .then(() => {
           displayItems();
@@ -183,7 +183,7 @@
         });
 
         //document.getElementById("sign-in").addEventListener("click", () => {
-          esriId.getCredential(info.portalUrl + "/sharing");
+          IdentityManager.getCredential(info.portalUrl + "/sharing");
         //});
         
         function displayItems() {
