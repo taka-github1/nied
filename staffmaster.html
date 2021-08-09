@@ -3,407 +3,434 @@
 <!DOCTYPE html>
 <html lang="en" >
 
-<head>
-
-  <meta charset="UTF-8">
-  
-<link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
-<meta name="apple-mobile-web-app-title" content="CodePen">
-
-<link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
-
-<link rel="mask-icon" type="" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
-
-
-  <title>CodePen - FeatureTable widget</title>
-  
-  
-  
-  
-<style>
-html,
-body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-#mainDiv {
-  width:100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: black;
-  color: white;
-}
-
-#headerDiv {
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-}
-
-.header_icon {
-  width: 40px;
-  height: 40px;
-}
-
-.title {
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-  padding-left: 10px;
-}
-
-.subtitle {
-  font-size: 16px;
-  color: red;
-  font-weight: bold;
-  padding-left: 10px;
-}
-
-
-#fileselectDiv {
-  height: 10%;
-  display: flex;
-  padding-top: 20px;
-  padding-left: 20px;
-}
-
-#tableDiv {
-  width: 99%;
-  height: calc(100% - 20%);
-  display: flex;
-}
-
-.esri-feature-table__header {
-  color: transparent;
-}
-
-.esri-feature-table__content {
-  background: gray;
-}
-
-button {
-  display: inline-block;
-  padding: 0.6em 1em;
-  text-decoration: none;
-  background: green;
-  color: white;
-  border: solid 2px black;
-  border-radius: 3px;
-  transition: .4s;
-  font-size: 14px;
-  min-width: 60px;
-  height: 40px;
-  margin: 0px;
-}
-
-button:hover {
-  background: dimgray;
-  color: white;
-  cursor: pointer;
-}
-
-label{
-  color: black;
-  font-weight: bold;
-}
-</style>
-
-  
-  
-  
-  
-
-</head>
-
-<body translate="no" >
-  <html>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
-    <title>FeatureTable widget | Sample | ArcGIS API for JavaScript 4.20</title>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://js.arcgis.com/4.20/"></script>
+    <meta charset="UTF-8">
+
+    <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+
+    <link rel="mask-icon" type="" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+
+
+    <title>CodePen - FeatureTable widget</title>
+
+
+
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      #mainDiv {
+        width:100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: black;
+        color: white;
+      }
+
+      #headerDiv {
+        display: flex;
+        flex-direction: row;
+        padding: 5px;
+      }
+
+      .header_icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .title {
+        font-size: 24px;
+        color: white;
+        font-weight: bold;
+        padding-left: 10px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+        color: red;
+        font-weight: bold;
+        padding-left: 10px;
+      }
+
+
+      #fileselectDiv {
+        height: 10%;
+        display: flex;
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+
+      #tableDiv {
+        width: 99%;
+        height: calc(100% - 20%);
+        display: flex;
+      }
+
+      .esri-feature-table__header {
+        color: transparent;
+      }
+
+      .esri-feature-table__content {
+        background: gray;
+      }
+
+      button {
+        display: inline-block;
+        padding: 0.6em 1em;
+        text-decoration: none;
+        background: green;
+        color: white;
+        border: solid 2px black;
+        border-radius: 3px;
+        transition: .4s;
+        font-size: 14px;
+        min-width: 60px;
+        height: 40px;
+        margin: 0px;
+      }
+
+      button:hover {
+        background: dimgray;
+        color: white;
+        cursor: pointer;
+      }
+
+      label{
+        color: black;
+        font-weight: bold;
+      }
+    </style>
+
+
+
+
+
+
   </head>
-  <body>
-    <div id="mainDiv">
-      <div id="headerDiv">
-        <div class="header_icon esri-icon-edit"></div>
-        <span class="title">StaffMaster Maintenance</span>
-      </div>
-      <span class="subtitle">Staff Master Select CSV File</span>
-      <div id="fileselectDiv">
-        <button id="btn-csv-select" style="height:40px">Select File</button>
-        <input id="csv-select" type="file" accept=".csv" hidden/>
-      </div>
-      <br/>
-      <span class="subtitle">Staff Master Table</span><br/>
-      <div class="btn-menu">
-        <button id="btn-all-select" style="height:40px">All Select</button>
-        <button id="btn-clear-select" style="height:40px">Clear Select</button>
-        <button id="btn-delete-select" style="height:40px">Selection Delete</button>
-      </div>
-      <div id="tableDiv"></div>
-    </div>
-  </body>
-</html>
-  
-  
-      <script id="rendered-js" >
-require([
-  "esri/layers/FeatureLayer",
-  "esri/widgets/FeatureTable",
-  "esri/portal/Portal",
-  "esri/identity/OAuthInfo",
-  "esri/identity/IdentityManager",
-  "esri/portal/PortalQueryParams"
-], function(FeatureLayer, FeatureTable, Portal, OAuthInfo, IdentityManager, PortalQueryParams) {
 
-  const portal = new Portal();
-  portal.authMode = "immediate";
-  portal.load().then(() => {
-    const queryParams = new PortalQueryParams({
-      query: "owner:" + portal.user.username,
-      sortField: "numViews",
-      sortOrder: "desc",
-      num: 20
-    });
-    portal.queryItems(queryParams).then(createGallery);
-  });
-  
-  var featureLayer_url = "https://services6.arcgis.com/YweFsHK2qzfki4O5/arcgis/rest/services/STAFF_MASTER_TBL_v02/FeatureServer/0";
-  var featureLayer = new FeatureLayer({
-    url: featureLayer_url,
-    title: "STAFF_MASTER"
-  });
+  <body translate="no" >
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+        <title>FeatureTable widget | Sample | ArcGIS API for JavaScript 4.20</title>
 
-  var select_objectIds = [];
-
-  const table = new FeatureTable({
-    layer: featureLayer,
-    visibleElements: {selectionColumn: false},
-    editingEnabled: true,
-    pageSize: 10,
-    visibleElements: {
-      header: false,
-      menu: false,
-      menuItems: {
-        clearSelection: false,
-        refreshData: false,
-        toggleColumns: false
-      },
-      selectionColumn: true
-    },
-    fieldConfigs: [
-      {
-        name: "STAFF_ID",
-        label: "STAFF_ID",
-        visible: true,
-        direction: "asc"
-      },
-      {
-        name: "NAME",
-        label: "Name"
-      },
-      {
-        name: "STAFF_SECTION",
-        label: "STAFF_SECTION"
-      },
-      {
-        name: "STAFF_POSITION",
-        label: "STAFF_POSITION"
-      },
-      {
-        name: "LEADER",
-        label: "LEADER"
-      },
-      {
-        name: "BUS_STOP_ID",
-        label: "BUS_STOP_ID"
-      }
-    ],
-    container: document.getElementById("tableDiv")
-  });
-
-  //CSV読み込み
-  $('#btn-csv-select').click(function(e){
-    $('#csv-select').click();
-  });
-  
-  //全選択
-  $('#btn-all-select').click(function(e){
-    selectFeatures(0);
-  });
-
-  //全選択解除
-  $('#btn-clear-select').click(function(e){
-    selectFeatures(1);
-  });
-  
-  //選択削除
-  $('#btn-delete-select').click(function(e){
-    deleteSelectionFeatures();
-  });
-  
-
-  var csv_select = document.getElementById("csv-select");
-
-  csv_select.addEventListener('change', function(e) {
-    var fileData = e.target.files[0];
-
-    var reader = new FileReader();
-
-    reader.onerror = function() {
-      alert('ファイル読み取りに失敗しました')
-    }
-
-    reader.onload = function() {
-      var lineArr = reader.result.split("\r\n");
-      var itemArr = [];
-      for (var i = 0; i < lineArr.length; i++) {
-        itemArr[i] = lineArr[i].split(",");
-      }
-
-      if (input_csv_check(itemArr) == false){
-        return;
-      } 
+        <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css" />
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://js.arcgis.com/4.20/"></script>
+      </head>
+      <body>
+        <div id="mainDiv">
+          <div id="headerDiv">
+            <div class="header_icon esri-icon-edit"></div>
+            <span class="title">StaffMaster Maintenance</span>
+          </div>
+          <span class="subtitle">Staff Master Select CSV File</span>
+          <div id="fileselectDiv">
+            <button id="btn-csv-select" style="height:40px">Select File</button>
+            <input id="csv-select" type="file" accept=".csv" hidden/>
+          </div>
+          <br/>
+          <span class="subtitle">Staff Master Table</span><br/>
+          <div class="btn-menu">
+            <button id="btn-all-select" style="height:40px">All Select</button>
+            <button id="btn-clear-select" style="height:40px">Clear Select</button>
+            <button id="btn-delete-select" style="height:40px">Selection Delete</button>
+          </div>
+          <div id="tableDiv"></div>
+        </div>
+      </body>
+    </html>
 
 
-      addFeatures(itemArr);
-    }
+    <script id="rendered-js" >
+      require([
+        "esri/layers/FeatureLayer",
+        "esri/widgets/FeatureTable",
+        "esri/portal/Portal",
+        "esri/identity/OAuthInfo",
+        "esri/identity/IdentityManager",
+        "esri/portal/PortalQueryParams"
+      ], function(FeatureLayer, FeatureTable, Portal, OAuthInfo, IdentityManager, PortalQueryParams) {
 
-    reader.readAsText(fileData);
-  });
+        const info = new OAuthInfo({
+          appId: "vXLUw3MXtt2k7iwa",
+          popup: false
+        });
+        esriId.registerOAuthInfos([info]);
 
-  function input_csv_check(data) {
-    var result = false;
+        esriId
+          .checkSignInStatus(info.portalUrl + "/sharing")
+          .then(() => {
+          displayItems();
+        })
+          .catch(() => {
+          anonPanelElement.style.display = "block";
+          personalPanelElement.style.display = "none";
+        });
 
-    //CSVのフィールド存在チェック
-    var allow_fields = table.fieldConfigs;
-    var input_fields = data[0];
-    var field_exists_check = true;
-    for (var i = 0; i < input_fields.length; i++) {
-      var hit_field = allow_fields.find(key => key.name == input_fields[i]);
+        //document.getElementById("sign-in").addEventListener("click", () => {
+          esriId.getCredential(info.portalUrl + "/sharing");
+        //});
+        
+        function displayItems() {
+          const portal = new Portal();
+          portal.authMode = "immediate";
+          portal.load().then(() => {
+            const queryParams = new PortalQueryParams({
+              query: "owner:" + portal.user.username,
+              sortField: "numViews",
+              sortOrder: "desc",
+              num: 20
+            });
 
-      if (hit_field == null) {
-        field_exists_check = false;
-      }
-    }
+            //userIdElement.innerHTML = portal.user.username;
+            //anonPanelElement.style.display = "none";
+            //personalPanelElement.style.display = "block";
 
-    if (field_exists_check == false) {
-      alert("ERROR: FIELD NOT EXISTS");
-      return false;
-    }
+            portal.queryItems(queryParams).then(createGallery);
+          });
+        }
+
+        var featureLayer_url = "https://services6.arcgis.com/YweFsHK2qzfki4O5/arcgis/rest/services/STAFF_MASTER_TBL_v02/FeatureServer/0";
+        var featureLayer = new FeatureLayer({
+          url: featureLayer_url,
+          title: "STAFF_MASTER"
+        });
+
+        var select_objectIds = [];
+
+        const table = new FeatureTable({
+          layer: featureLayer,
+          visibleElements: {selectionColumn: false},
+          editingEnabled: true,
+          pageSize: 10,
+          visibleElements: {
+            header: false,
+            menu: false,
+            menuItems: {
+              clearSelection: false,
+              refreshData: false,
+              toggleColumns: false
+            },
+            selectionColumn: true
+          },
+          fieldConfigs: [
+            {
+              name: "STAFF_ID",
+              label: "STAFF_ID",
+              visible: true,
+              direction: "asc"
+            },
+            {
+              name: "NAME",
+              label: "Name"
+            },
+            {
+              name: "STAFF_SECTION",
+              label: "STAFF_SECTION"
+            },
+            {
+              name: "STAFF_POSITION",
+              label: "STAFF_POSITION"
+            },
+            {
+              name: "LEADER",
+              label: "LEADER"
+            },
+            {
+              name: "BUS_STOP_ID",
+              label: "BUS_STOP_ID"
+            }
+          ],
+          container: document.getElementById("tableDiv")
+        });
+
+        //CSV読み込み
+        $('#btn-csv-select').click(function(e){
+          $('#csv-select').click();
+        });
+
+        //全選択
+        $('#btn-all-select').click(function(e){
+          selectFeatures(0);
+        });
+
+        //全選択解除
+        $('#btn-clear-select').click(function(e){
+          selectFeatures(1);
+        });
+
+        //選択削除
+        $('#btn-delete-select').click(function(e){
+          deleteSelectionFeatures();
+        });
+
+
+        var csv_select = document.getElementById("csv-select");
+
+        csv_select.addEventListener('change', function(e) {
+          var fileData = e.target.files[0];
+
+          var reader = new FileReader();
+
+          reader.onerror = function() {
+            alert('ファイル読み取りに失敗しました')
+          }
+
+          reader.onload = function() {
+            var lineArr = reader.result.split("\r\n");
+            var itemArr = [];
+            for (var i = 0; i < lineArr.length; i++) {
+              itemArr[i] = lineArr[i].split(",");
+            }
+
+            if (input_csv_check(itemArr) == false){
+              return;
+            } 
+
+
+            addFeatures(itemArr);
+          }
+
+          reader.readAsText(fileData);
+        });
+
+        function input_csv_check(data) {
+          var result = false;
+
+          //CSVのフィールド存在チェック
+          var allow_fields = table.fieldConfigs;
+          var input_fields = data[0];
+          var field_exists_check = true;
+          for (var i = 0; i < input_fields.length; i++) {
+            var hit_field = allow_fields.find(key => key.name == input_fields[i]);
+
+            if (hit_field == null) {
+              field_exists_check = false;
+            }
+          }
+
+          if (field_exists_check == false) {
+            alert("ERROR: FIELD NOT EXISTS");
+            return false;
+          }
 
 
 
 
-    return true;
-  }
+          return true;
+        }
 
-  function addFeatures(data) {
+        function addFeatures(data) {
 
-    var features = [];
-    var input_fields = data[0];
-    for (var i = 1; i < data.length; i++) {
-      var attribute = {};
-      if (data[i].length <= 1){
-        continue;
-      }
-      for (var j = 0; j < data[i].length; j++) {
-        var field = data[0][j];
-        var value = data[i][j];  
-        attribute[field] = value;
-      }
-      features.push({
-        "attributes": attribute
+          var features = [];
+          var input_fields = data[0];
+          for (var i = 1; i < data.length; i++) {
+            var attribute = {};
+            if (data[i].length <= 1){
+              continue;
+            }
+            for (var j = 0; j < data[i].length; j++) {
+              var field = data[0][j];
+              var value = data[i][j];  
+              attribute[field] = value;
+            }
+            features.push({
+              "attributes": attribute
+            });
+          }
+
+          var url = featureLayer_url + "/addFeatures";
+
+          var form = new FormData();
+          form.set('f','json');
+          form.set('features', JSON.stringify(features));
+          //form.set('token', token);
+
+          $.ajax({
+            url: url,
+            type: "POST",
+            data: form,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            async: false
+          }).done(function(data) {
+            console.log(data);
+            table.refresh(); 
+          }).fail(function(data) {
+            console.log(data);
+          });
+        }
+
+        table.on("selection-change", function(changes) {
+          changes.removed.forEach(function(item) {
+            if (item.objectId) { select_objectIds.splice(select_objectIds.indexOf(item.objectId), 1);
+                               }
+          });
+
+          changes.added.forEach(function(item) {
+            if (item.objectId) {
+              select_objectIds.push(item.objectId);
+            }
+          });
+        });
+
+
+        async function selectFeatures(flg) {
+
+          var query = featureLayer.createQuery();
+
+          query.where = "1=1";
+          query.outFields = "*";
+
+          var response = await featureLayer.queryFeatures(query);
+          var features = response.features;
+
+          if (flg==0) {
+            table.selectRows(features);
+          } else {
+            table.deselectRows(features);
+          }
+        }
+
+
+
+        async function deleteSelectionFeatures() {
+
+          var deleteFeatures = [];
+
+          for (var i=0;i<select_objectIds.length;i++){
+            deleteFeatures.push({objectId: select_objectIds[i]});
+          }
+
+          if (select_objectIds.length > 0){
+            await featureLayer.applyEdits({
+              deleteFeatures: deleteFeatures
+            });
+            table.refresh();  
+          }
+        }
       });
-    }
-    
-    var url = featureLayer_url + "/addFeatures";
-
-    var form = new FormData();
-    form.set('f','json');
-    form.set('features', JSON.stringify(features));
-    //form.set('token', token);
-
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: form,
-      processData: false,
-      contentType: false,
-      dataType: 'json',
-      async: false
-    }).done(function(data) {
-      console.log(data);
-      table.refresh(); 
-    }).fail(function(data) {
-      console.log(data);
-    });
-  }
-
-  table.on("selection-change", function(changes) {
-    changes.removed.forEach(function(item) {
-      if (item.objectId) { select_objectIds.splice(select_objectIds.indexOf(item.objectId), 1);
-      }
-    });
-
-    changes.added.forEach(function(item) {
-      if (item.objectId) {
-        select_objectIds.push(item.objectId);
-      }
-    });
-  });
-
-
-  async function selectFeatures(flg) {
-    
-    var query = featureLayer.createQuery();
-
-    query.where = "1=1";
-    query.outFields = "*";
-
-    var response = await featureLayer.queryFeatures(query);
-    var features = response.features;
-    
-    if (flg==0) {
-      table.selectRows(features);
-    } else {
-      table.deselectRows(features);
-    }
-  }
-  
-  
-  
-  async function deleteSelectionFeatures() {
-
-    var deleteFeatures = [];
-
-    for (var i=0;i<select_objectIds.length;i++){
-      deleteFeatures.push({objectId: select_objectIds[i]});
-    }
-
-    if (select_objectIds.length > 0){
-      await featureLayer.applyEdits({
-        deleteFeatures: deleteFeatures
-      });
-      table.refresh();  
-    }
-  }
-});
     </script>
 
-  
 
-</body>
+
+  </body>
 
 </html>
- 
+
