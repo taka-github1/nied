@@ -160,52 +160,15 @@
       require([
         "esri/layers/FeatureLayer",
         "esri/widgets/FeatureTable",
-        "esri/portal/Portal",
         "esri/identity/OAuthInfo",
-        "esri/identity/IdentityManager",
-        "esri/portal/PortalQueryParams"
-      ], function(FeatureLayer, FeatureTable, Portal, OAuthInfo, IdentityManager, PortalQueryParams) {
+        "esri/identity/IdentityManager"
+      ], function(FeatureLayer, FeatureTable, OAuthInfo, IdentityManager) {
 
         const info = new OAuthInfo({
           appId: "vXLUw3MXtt2k7iwa",
           popup: false
         });
         IdentityManager.registerOAuthInfos([info]);
-
-        /*
-        IdentityManager
-          .checkSignInStatus(info.portalUrl + "/sharing")
-          .then(() => {
-          displayItems();
-        })
-          .catch(() => {
-          anonPanelElement.style.display = "block";
-          personalPanelElement.style.display = "none";
-        });
-
-        //document.getElementById("sign-in").addEventListener("click", () => {
-          IdentityManager.getCredential(info.portalUrl + "/sharing");
-        //});
-        
-        function displayItems() {
-          const portal = new Portal();
-          portal.authMode = "immediate";
-          portal.load().then(() => {
-            const queryParams = new PortalQueryParams({
-              query: "owner:" + portal.user.username,
-              sortField: "numViews",
-              sortOrder: "desc",
-              num: 20
-            });
-
-            //userIdElement.innerHTML = portal.user.username;
-            //anonPanelElement.style.display = "none";
-            //personalPanelElement.style.display = "block";
-
-            //portal.queryItems(queryParams).then(createGallery);
-          });
-        }
-        */
 
         var featureLayer_url = "https://services6.arcgis.com/YweFsHK2qzfki4O5/arcgis/rest/services/STAFF_MASTER_TBL_v02/FeatureServer/0";
         var featureLayer = new FeatureLayer({
