@@ -1,6 +1,7 @@
 {
   "application_id": "2Rr8gJDiy17TnVcT",
-  "magager_groupid": "ca0a243594e24b9e994f4b75138d0b86",
+  "manager_groupid": "ca0a243594e24b9e994f4b75138d0b86",
+  "viewer_groupid": "ca0a243594e24b9e994f4b75138d0b86",
   "operatiing_viewer_url": "https://taka-github1.github.io/nied/bus_risk_app_v04.html",
   "operatiing_edit_url": "https://taka-github1.github.io/nied/staff_master_maintenance_v04.html",
   "materials_viewer_url": "https://taka-github1.github.io/nied/supply_chain_app_v04.html",
