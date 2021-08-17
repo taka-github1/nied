@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<html lang="ja" >
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>Business Impact Analysis Main Menu</title>
+  
+  
+  
+  
+<style>
+html,
+body{
+  background-color: white;
+  color: black;
+  width: 99%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.title {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.menu-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #000000;
+  border-radius: 20px;
+  padding: 10px 10px 20px 10px;
+  height: auto;
+  width: 100%;
+}
+
+.menu-title {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.menu-image {
+  height: 15vh;
+  width:auto;
+}
+
+.menu-keepout {
+  font-size: 24px;
+  padding: 50px;
+  vertical-align: middle;
+}
+
+.table-grid {
+  border-color: white;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+  height: calc(100vh - 10vh);
+    table-layout: fixed;
+}
+.tr-menu-grid {
+  display: flex;
+  justify-content: space-evenly;
+  height: 30%;
+  min-height: 120px;
+  width: 100%;
+  padding: 10px;
+}
+
+.td-menu-grid {
+  display: flex;
+  width: 30%;
+  justify-content: space-evenly;
+}
+.tr-arrow-grid {
+  display: flex;
+  justify-content: space-evenly;
+  height: 10px;
+  width: 100%;
+}
+
+.td-arrow-grid {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.btn-list {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+#mainDiv {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+}
+
+#titlePanel {
+  background-color: black;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  padding: 5px;
+}
+
+.sign-btn {
+  margin: 0 0 0 auto;
+  color: white;
+  min-width: 60px;
+  height: 40px;
+}
+
+.gallery-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.gallery-panel {
+  display: flex;
+  text-align: center;
+  width: 120px;
+  height: 50px;
+  font-size: 24px;
+  margin: 35px;
+  border-radius: 25px;
+}
+
+
+button {
+  display: block;
+  padding: 0.6em 1em;
+  text-decoration: none;
+  background: rgba(100,100,100,0.7);
+  border: solid 2px #67c5ff;
+  border-radius: 3px;
+  transition: .4s;
+  font-size: 12px;
+  min-width: 80px;
+  margin: 5px;
+}
+
+button:hover {
+  background: rgba(0,0,120,0.7);
+  cursor: pointer;
+}
+
+.viewer {
+  display: none;
+}
+
+.manager {
+  display: none;
+}
+
+#operatiingDiv {
+  background-color: rgba(255,255,153,1);
+}
+
+#materialsDiv {
+  background-color: rgba(204,255,255,1);
+}
+
+#valueAddingDiv {
+  background-color: rgba(50,204,205,1);
+}
+
+#productsDiv {
+  background-color: rgba(204,255,255,1);
+}
+
+#wasteDiv {
+  background-color: rgba(255,255,153,1);
+}
+</style>
+
+  
+  
+  
+  
+
+</head>
+
+<body translate="no" >
+  <html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Business Impact Analysis Main Menu</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/css/main.css" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://js.arcgis.com/4.20/"></script>
+  </head>
+
+  <body>
+    <div id="titlePanel">
+      <span class="title">Business Impact Analysis Main Menu</span>
+      <button id="sign-in" class="sign-btn">Sign In</button>
+      <button id="sign-out" class="sign-btn hidden">Sign Out</button>
+    </div>
+    <div id="anonymousPanel" style="display: block; padding: 5px;">
+    </div>
+    <div id="mainDiv" style="display: block;">
+      <table class="table-grid">
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid"></td>
+          <td class="td-menu-grid">
+            <div id="operatiingDiv" class="menu-panel">
+              <span class="menu-title">Operatiing Resources</span>
+              <img class="menu-image" src="https://taka-github1.github.io/nied/%E3%83%90%E3%82%B9%E9%80%9A%E5%8B%A4%E3%82%A2%E3%83%97%E3%83%AA.png"/>
+              <div class="btn-list">
+                <button id="bus-commuting-viewer" class="viewer">Viewer</button>
+                <button id="staff-maintenance" class="manager">Edit</button>
+              </div>
+            </div>
+          </td>
+          <td class="td-menu-grid"></td>
+        </tr>
+        <tr class="tr-arrow-grid">
+          <td class="td-arrow-grid"></td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-arrow-down"/>
+          </td>
+          <td class="td-arrow-grid"></td>
+        </tr>
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid">
+            <div id="materialsDiv" class="menu-panel">
+              <span class="menu-title">Materials/Supply</span>
+              <img class="menu-image" src="https://taka-github1.github.io/nied/%E3%82%B5%E3%83%97%E3%83%A9%E3%82%A4%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA.png"/>
+              <div class="btn-list">
+                <button id="supply-viewer" class="viewer">Viewer</button>
+                <button id="supply-maintenance" class="manager">Edit</button>
+              </div>
+            </div>
+          </td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-right-arrow"/>
+          </td>
+          <td class="td-menu-grid">
+            <div id="valueAddingDiv" class="menu-panel">
+              <span class="menu-title">Value Adding Process</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-right-arrow"/>
+          </td>
+          <td class="td-menu-grid">
+            <div id="productsDiv" class="menu-panel">
+              <span class="menu-title">Products/Servies</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="tr-arrow-grid">
+          <td class="td-arrow-grid"></td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-arrow-down"/>
+          </td>
+          <td class="td-arrow-grid"></td>
+        </tr>
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid"></td>
+          <td class="td-menu-grid">
+            <div id="wasteDiv" class="menu-panel">
+              <span class="menu-title">Waste Produts</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+          <td class="td-menu-grid"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
+  
+  
+      <script id="rendered-js" >
+var config = null;
+var application_id = null;
+var magager_groupid = null;
+var operatiing_viewer_url = null;
+var operatiing_edit_url = null;
+var materials_viewer_url = null;
+
+
+require([
+  "esri/portal/Portal",
+  "esri/identity/OAuthInfo",
+  "esri/identity/IdentityManager"
+], function(
+        Portal, OAuthInfo, identityManager) {
+  
+  //configの読み込み
+  var json_url = "https://taka-github1.github.io/nied/main_menu_confin.json";
+
+  $.ajaxSetup({async: false});
+  $.getJSON(json_url, function(json) {
+    config = json;
+    //$('#KaishaName').html(kaisha_name);
+  });
+  $.ajaxSetup({async: true});
+
+
+  var portalUrl =  "https://www.arcgis.com/sharing";
+
+  var info = new OAuthInfo({
+    appId: config.application_id,
+    popup: false
+  });
+
+  identityManager.registerOAuthInfos([info]);
+
+  $('#sign-in').click(function() {
+    identityManager.getCredential(portalUrl);
+  });
+  
+  $('#sign-out').click(function() {
+    identityManager.destroyCredentials();
+    window.location.reload();
+  });
+
+  identityManager.checkSignInStatus(portalUrl).then(function() {
+    displayForm();
+  });
+
+  function displayForm() {
+    var portal = new Portal();
+
+    portal.load().then(function () {
+
+      //グループに所属しているかのチェック
+      portal.user.fetchGroups().then(function(fetchItemResult){
+        
+        const manager_match = fetchItemResult.find((group) => {
+          return (group.id === config.manager_groupid);
+        });
+        
+        const viewer_match = fetchItemResult.find((group) => {
+          return (group.id === config.viewer_groupid);
+        });
+
+        if (manager_match != undefined) {
+          $("#sign-in").addClass("hidden");
+          $("#sign-out").removeClass("hidden");
+          $('.viewer').css('display', 'block');
+          $('.manager').css('display', 'block');
+        } else if (viewer_match != undefined) {
+          $("#sign-in").addClass("hidden");
+          $("#sign-out").removeClass("hidden");
+          $('.viewer').css('display', 'block');
+          $('.manager').css('display', 'none');
+        } else {          
+          identityManager.destroyCredentials();
+          alert("システムを利用できるユーザではありません");
+          $("#sign-in").removeClass("hidden");
+          $("#sign-out").addClass("hidden");
+          $('.viewer').css('display', 'none');
+          $('.manager').css('display', 'none');
+          return;
+        } 
+      });
+    });
+  }
+  
+  
+  
+  $('#bus-commuting-viewer').click(function() {
+    window.open(config.operatiing_viewer_url, '_blank');
+  });
+  $('#staff-maintenance').click(function() {
+    window.open(config.operatiing_edit_url, '_blank');
+  });
+  $('#supply-viewer').click(function() {
+    window.open(config.materials_viewer_url, '_blank');
+  });
+  $('#supply-maintenance').click(function() {
+    window.open(config.materials_edit_url, '_blank');
+  });
+  
+});
+
+
+    </script>
+
+  
+
+</body>
+
+</html>
+ 
