@@ -864,7 +864,7 @@ require([
     var query = staffCommutingTable.createQuery();
 
     //稼働のみ
-    query.where = "STORY_ID = " + story_id + "AND OPERATINGDAY = '" + str_date + "'";
+    query.where = "STORY_ID = " + story_id + " AND OPERATINGDAY = '" + str_date + "'";
     query.outFields = [
       "STAFF_SECTION"
     ];
