@@ -1,0 +1,1886 @@
+
+
+<!DOCTYPE html>
+<html lang="ja" >
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>バス通勤従業員リスク解析</title>
+  
+  
+  
+  
+<style>
+html,
+body,
+
+#mainDiv {
+  width:100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: black;
+  color: white;
+}
+
+.change_body {
+  margin: 0 0 0 auto;
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  text-decoration: none;
+  color: #FFF;
+  background: #fd9535;/*背景色*/
+  border-bottom: solid 2px #d27d00;/*少し濃い目の色に*/
+  border-radius: 4px;/*角の丸み*/
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), 0 2px 2px rgba(0, 0, 0, 0.19);
+  font-weight: bold;
+  width: 120px;
+  cursor: pointer;
+}
+
+.change_body:active {
+  border-bottom: solid 2px #fd9535;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
+}
+
+#headerDiv {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+
+#timeslider_centermainDiv {
+  height: 90%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#timeslider_leftDiv {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#timeslider_mapviewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 40%;
+}
+
+#timeslider_rightDiv {
+  padding: 0;
+  height: 100%;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+
+#timeslider_footerDiv {
+  padding: 0;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#absence-of-leaders-Div{
+  height: 50%;
+  overflow-y: auto;
+}
+
+#classificationChartDiv {
+  height: 50%;
+  width: 100%;
+}
+
+.chartStyle {
+  display: -webkit-box;
+  display: block;
+  flex-wrap: wrap; 
+  -webkit-box-orient: vertical; 
+  --flex-direction: column;
+  height: 100%;
+  width: 100%;
+  align-content: left;
+  padding: 0px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+#timeSliderValue {
+  min-height: 10%;
+  color: chocolate;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  -webkit-justify-content: center;
+  min-width: 10%;
+  margin-bottom: 10px;
+}
+
+#timeSliderDiv {
+  height: auto;
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+/* esri overrides */
+.esri-time-slider__layout--wide .esri-time-slider__time-extent,
+.esri-time-slider__layout--compact .esri-time-slider__time-extent,
+.esri-time-slider__layout--wide .esri-time-slider__min,
+.esri-time-slider__layout--wide .esri-time-slider__max,
+.esri-time-slider__layout--compact .esri-time-slider__min-date,
+.esri-time-slider__layout--compact .esri-time-slider__max-date,
+.esri-legend__layer-caption {
+  display: none !important;
+}
+
+.body-active {
+  display: flex;
+  width: 100%;
+  height: 90%;
+  flex-direction: column;
+}
+
+.body-nonactive {
+  display: none;
+}
+
+.header_icon {
+  width: 40px;
+  height: 40px;
+}
+
+.title {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.menutitle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+  padding-left: 100px;
+  height: 100%;
+}
+
+ul {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+ul + div {
+  display: none;
+}
+
+ul:empty + div {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-left: 10px;
+  display: block;
+  font-size: 14px;
+}
+
+li {
+  list-style: none;
+  width: 90%;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 10px 10px 10px 10px;
+  border: 1px solid #CCC;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 9px;
+}
+
+.li_selected {
+  background-color: rgba(0, 0, 120, 0.8);
+}
+
+li:hover {
+  background-color: rgba(0, 0, 120, 0.5);
+}
+
+#alltime_centermainDiv {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#alltime_mapviewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 50%;
+  background-color: black;
+}
+
+#alltime_rightDiv {
+  padding: 0;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+alltime_InundationDepth {
+  padding: 0;
+  height: 40%;
+  width: 100%; 
+}
+
+#inundationDepthChartCanvas {
+  height: 100%;
+  max-height: 300px;
+}
+
+#alltime_transitionDiv {
+  padding: 0;
+  height: 60%;
+  width: 100%;
+}
+
+.tab-group{
+  display: flex;
+  justify-content: center;
+  height: auto;
+}
+
+.tab{
+  flex-grow: 1;
+  height: 20px;
+  padding:0px;
+  list-style:none;
+  /*border:solid 1px #CCC;*/
+  text-align:center;
+  cursor:pointer;
+}
+
+.tab.is-active{
+  background:#F00;
+  color:#FFF;
+  transition: all 0.2s ease-out;
+}
+
+.panel-group{
+  height:100%;
+}
+.panel{
+  display:none;
+}
+.panel.is-show{
+  display:block;
+}
+</style>
+
+  
+  
+  
+  
+
+</head>
+
+<body translate="no" >
+  <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+          name="viewport"
+          content="initial-scale=1,maximum-scale=1,user-scalable=no"
+          />
+    <title>
+      バス通勤従業員リスク解析
+    </title>
+
+    <link
+          rel="stylesheet"
+          href="https://js.arcgis.com/4.20/esri/themes/dark-red/main.css"
+          />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://js.arcgis.com/4.20/"></script>
+  </head>
+
+  <body>
+    <div id="mainDiv">
+      <div id="headerDiv">
+        <img class="header_icon" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/c911fc629c584dfea132c1ed27aa85e5/data">
+        <span class="title">Bus Commuting Continuity Simulation</span>
+        <span class="menutitle">Choise Story：</span>
+        <select id="select_storyId">
+        </select>
+        <button id="change_body" class="change_body">All Time</button>
+      </div>
+      <div id="body1Div" class="body-active">
+        <div id="timeslider_centermainDiv">
+          <div id="timeslider_leftDiv">
+            <div id="absence-of-leaders-Div">
+              <span class="subtitle">Absence of leaders</span>
+              <ul id="absence-of-leaders-list">
+              </ul>
+              <div>No Data</div>
+            </div>
+            <span class="subtitle">not commuting employees by section</span>
+            <div id="classificationChartDiv" class="chartStyle" >
+              <canvas id="classificationChartCanvas"/>
+            </div>
+            <div>
+              <input type="checkbox" id="check_rate" name="check_rate">
+              <label for="check_rate">Display Rate</label>
+            </div>
+          </div>
+          <div id="timeslider_mapviewDiv">
+          </div>
+          <div id="timeslider_rightDiv">
+            <span class="subtitle">Suspended bus routes</span>
+            <ul id="supend-busroute-list">
+            </ul>
+            <div>No Data</div>
+          </div>
+        </div>
+        <div id="timeslider_footerDiv">
+          <div id="timeSliderValue">4/1</div>
+          <div id="timeSliderDiv"></div>
+        </div>
+      </div>
+      <div id="body2Div" class="body-nonactive">
+        <div id="alltime_centermainDiv">
+          <div id="alltime_mapviewDiv"></div>
+          <div id="alltime_rightDiv">
+            <div id="alltime_InundationDepth">
+              <span class="subtitle">Inundation Depth Time Transition</span>
+              <canvas id="inundationDepthChartCanvas"/>
+            </div>
+            <div id="alltime_transitionDiv">
+              <span class="subtitle"># of absenting bus commuters by time</span>
+              <ul id=timeSeriesChartTab class="tab-group">
+              </ul>
+              <div id="timeSeriesChartDiv" class="chartStyle">
+                <div id="timeSeriesChartPanel">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div id="timeslider_FloodDiv" class="esri-component esri-widget">
+      <div class="esri-widget--button esri-widget esri-interactive switchImage" 
+           style="width: 150px">
+        <span class="esri-icon esri-icon-layers imagelayertype">Flood(Risk)</span> 
+      </div>
+    </div>
+    <div id="timeslider_BusDiv" class="esri-component esri-widget">
+      <div class="esri-widget--button esri-widget esri-interactive switchBusroute" style="width: 150px">
+        <span class="esri-icon esri-icon-layers busroutetype">Bus(Summary)</span>
+      </div>
+    </div>
+    <div id="alltime_FloodDiv" class="esri-component esri-widget">
+      <div class="esri-widget--button esri-widget esri-interactive switchImage" 
+           style="width: 150px">
+        <span class="esri-icon esri-icon-layers imagelayertype">Flood(Risk)</span> 
+      </div>
+    </div>
+  </body>
+</html>
+  
+  
+      <script id="rendered-js" >
+require([
+  "esri/portal/Portal",
+  "esri/identity/OAuthInfo",
+  "esri/identity/IdentityManager",
+  "esri/WebMap", 
+  "esri/views/MapView",
+  "esri/layers/FeatureLayer",
+  "esri/layers/TileLayer",
+  "esri/layers/ImageryLayer",
+  "esri/layers/GraphicsLayer",
+  "esri/Graphic",
+  "esri/widgets/Legend",
+  "esri/widgets/Expand",
+  "esri/widgets/TimeSlider",
+  "esri/tasks/support/Query",
+  "esri/layers/support/MosaicRule",
+  "esri/renderers/RasterStretchRenderer",
+  "esri/layers/support/RasterFunction",
+  "esri/core/watchUtils"
+], function (
+        Portal, OAuthInfo, identityManager,
+        WebMap,
+         MapView,
+         FeatureLayer,
+         TileLayer,
+         ImageryLayer,
+         GraphicsLayer,
+         Graphic,
+         Legend,
+         Expand,
+         TimeSlider,
+         Query,
+         MosaicRule,
+         RasterStretchRenderer,
+         RasterFunction,
+         watchUtils
+        ) {
+
+  //configの読み込み
+  var json_url = "https://taka-github1.github.io/nied/main_menu_confin.json";
+  $.ajaxSetup({async: false});
+  $.getJSON(json_url, function(json) {
+    config = json;
+  });
+  $.ajaxSetup({async: true});
+  
+  var portalUrl =  "https://www.arcgis.com/sharing";
+
+  var info = new OAuthInfo({
+    appId: config.application_id,
+    popup: false
+  });
+
+  identityManager.registerOAuthInfos([info]);
+  identityManager.getCredential(portalUrl);
+    
+  var notavailablerouteFeturelayer = null;
+  var routeFeturelayer = null;
+  var timeslider_hazard_shinsuiImagelayer = null;
+  var timeslider_risk_shinsuiImagelayer = null;
+  var staffMasterTable = null;
+  var staffCommutingTable = null;
+  var notavailablerouteGraphicsLayer = null;
+  var summary_notavailablerouteGraphicsLayer = null;
+  
+  var alltime_obeservatoryFeturelayer = null;
+  var alltime_notavailablerouteFeturelayer = null;
+  var alltime_hazard_shinsuiImagelayer = null;
+  var alltime_risk_shinsuiImagelayer = null;
+  var alltime_summary_notavailablerouteGraphicsLayer = null;
+  var alltime_staffCommutingTable = null;
+  var alltime_staffMasterTable = null;
+  var alltime_inudation_depthFeturelayer = null;
+
+  var classificationChart = null;
+  var timeSeriesChart = null;
+  var inundationDepthChart = null;
+
+  var section_staff_list = {};
+  var suspended_route_ids = [];
+  var summary_suspended_route_ids = [];
+  var alltime_summary_suspended_route_ids = [];
+  var route_features = [];
+  
+  var config = null;
+
+  //configの読み込み
+  var json_url = "shinsui_storylist.json";
+
+  $.ajaxSetup({async: false});
+  $.getJSON(json_url, function(json) {
+    config = json;
+  });
+  $.ajaxSetup({async: true});
+  
+  var story_id = "1";
+  
+  $('#select_storyId > option').remove();
+  for (var i=0;i<config.length;i++) {
+    var id = config[i].story_id;
+    var label = config[i].story_label;
+    $('#select_storyId').append($('<option>').html(label).val(id));
+  }
+  
+  const timeslider_map = new WebMap({
+    portalItem: {
+      id: "a43cb42c2f744a498af6a11d834262b9"
+    }
+  });
+
+  notavailablerouteGraphicsLayer = new GraphicsLayer();
+  timeslider_map.add(notavailablerouteGraphicsLayer);
+
+  summary_notavailablerouteGraphicsLayer = new GraphicsLayer();
+  timeslider_map.add(summary_notavailablerouteGraphicsLayer);
+
+  notavailablerouteGraphicsLayer.visible = true;
+  summary_notavailablerouteGraphicsLayer.visible = false;
+
+  const timeslider_view = new MapView({
+    container: "timeslider_mapviewDiv",
+    map: timeslider_map, 
+    popup: {
+      dockEnabled: true,
+      dockOptions: {
+        buttonEnabled: false,
+        breakpoint: false,
+        position: "top-left"
+      }
+    }
+  });
+
+  timeslider_view.ui.add("timeslider_FloodDiv", "top-right");
+  timeslider_view.ui.add("timeslider_BusDiv", "top-right");
+  
+  timeslider_view_setwidget();
+
+  const alltime_map = new WebMap({
+    portalItem: {
+      id: "6e26da009f2c4183bbdd4af1a90babfa"
+    }
+  });
+
+  alltime_summary_notavailablerouteGraphicsLayer = new GraphicsLayer();
+  alltime_map.add(alltime_summary_notavailablerouteGraphicsLayer);
+  
+  const alltime_view = new MapView({
+    container: "alltime_mapviewDiv",
+    map: alltime_map, 
+    popup: {
+      dockEnabled: true,
+      dockOptions: {
+        buttonEnabled: false,
+        breakpoint: false,
+        position: "top-left"
+      }
+    }
+  });
+
+  alltime_view.ui.add("alltime_FloodDiv", "top-right");
+  
+  var timeSlider = new TimeSlider({
+    container: "timeSliderDiv",
+    view: timeslider_view,
+    fullTimeExtent: {
+      start: new Date(2021, 3, 1, 9, 0),
+      end: new Date(2021, 11, 31, 9, 0)
+    },
+    playRate: 2000,
+    mode: "instant",
+    stops: {
+      interval: {
+        value: 1,
+        unit: "days"
+      }
+    }
+  });
+  
+  timeSlider.watch("values", function(values){
+
+    if (timeslider_risk_shinsuiImagelayer == null || timeslider_hazard_shinsuiImagelayer == null ||
+        staffCommutingTable == null || staffMasterTable == null) {
+      return;
+    }
+
+    refreshTimesliderDiv(values[0]);
+
+    timeslider_view.popup.close();
+  });
+
+  timeslider_map.when(function (layers) {
+    //レイヤー取得
+    notavailablerouteFeturelayer = layers.layers.find(
+      value => value.title == "利用不可バスルート状況");
+    
+    routeFeturelayer = layers.layers.find(
+      value => value.title == "バスルート");
+    
+    timeslider_hazard_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Hazard)");
+    
+    timeslider_risk_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Risk)");
+    
+    timeslider_map.reorder(timeslider_hazard_shinsuiImagelayer, 0);
+    timeslider_map.reorder(timeslider_risk_shinsuiImagelayer, 1);
+    
+    staffCommutingTable = layers.tables.find(
+      value => value.title == "STAFF_COMMUTING_FS");
+    
+    staffMasterTable = layers.tables.find(
+      value => value.title == "STAFF_MASTER_TBL");
+
+    //getSection_Staff_List();
+    refreshTimesliderDiv(new Date(2021, 3, 1));
+  });
+  
+  alltime_map.when(async function (layers) {
+    //レイヤー取得
+    alltime_obeservatoryFeturelayer = layers.layers.find(
+      value => value.title == "OBESERVATORY");
+    alltime_notavailablerouteFeturelayer = layers.layers.find(
+      value => value.title == "利用不可バスルート状況");
+    alltime_hazard_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Hazard)");
+    alltime_risk_shinsuiImagelayer = layers.layers.find(
+      value => value.title == "Flood(Risk)");
+    alltime_staffCommutingTable = layers.tables.find(
+      value => value.title == "STAFF_COMMUTING_FS");
+    alltime_staffMasterTable = layers.tables.find(
+      value => value.title == "STAFF_MASTER_TBL");
+    alltime_inudation_depthFeturelayer = layers.tables.find(
+      value => value.title == "INUDATION_DEPTH_TBL");
+    
+    alltime_map.reorder(alltime_hazard_shinsuiImagelayer, 0);
+    alltime_map.reorder(alltime_risk_shinsuiImagelayer, 1);
+    
+    await getSection_Staff_List();
+    
+    getalltimeSuspend_Bus_RouteGraphic();
+    drawTimeSeriesChart();
+    drawInudationDepthChart();
+  });
+
+  timeslider_view.when(function() {
+
+    //Suspend bus routesリスト選択
+    timeslider_view.whenLayerView(notavailablerouteFeturelayer).then(function(layerView) {
+      $('body').on('click', '#supend-busroute-list li', function(e){
+
+        for (let li of $('li')) {
+          li.classList.remove("li_selected");
+        }
+        e.preventDefault();
+        e.target.classList.add("li_selected");
+        feature_highlight(e);
+      });
+
+      function feature_highlight(event) {
+
+
+        let value = event.target.id.split(',');
+
+        var query = notavailablerouteFeturelayer.createQuery();
+        query.where = "STORY_ID = " + story_id + "AND ROUTE_ID=" + value[0] + " AND OPERATINGDAY ='" + value[1] + "'";
+        query.maxAllowableOffset = 1;
+
+        notavailablerouteFeturelayer.queryFeatures(query).then(function(result) {
+
+          var feature = result.features[0];
+
+          feature.popupTemplate = notavailablerouteFeturelayer.popupTemplate;
+          layerView.view.popup.highlightEnabled = true;
+
+          layerView.view.popup.open({
+            features: [feature],
+            featureMenuOpen: false,
+            updateLocationEnabled: false
+          });
+
+          timeslider_view.goTo(
+            {
+              target: feature.geometry
+            },
+            {
+              duration: 1000,
+              easing: "in-out-expo"
+            }
+          ).catch(function(error){
+            if (error.name != "AbortError"){
+              console.log(error);
+            }
+          });
+        });
+      }
+    });
+  });
+
+  function refreshTimesliderDiv(date) {
+    $('#timeSliderValue').text((date.getMonth()+1) + "/" + date.getDate());
+    shinsuiFeaturelayer_query(date);
+    shinsuiImagelayer_query(date);
+    drawClassificationChart(date);
+    suspendlist_query(date);
+    getSuspend_Bus_RouteGraphic(date);
+    absenceleaders_query(date);
+  }
+  
+  //storyIDの変更時
+  $('#select_storyId').on('change', function(e){
+    story_id = e.target.selectedOptions[0].value;
+    
+    //イメージサービスのURL変更
+    timeslider_hazard_shinsuiImagelayer.url = config.find(value => value.story_id == Number(story_id)).shinsuiImage_url;
+    timeslider_risk_shinsuiImagelayer.url = config.find(value => value.story_id == Number(story_id)).shinsuiImage_url;
+    
+    var id = config.find(value => value.story_id == Number(story_id)).alltime_shinsui_hazard_id;
+    
+    var visible = alltime_hazard_shinsuiImagelayer.visible;
+    alltime_map.layers.remove(alltime_hazard_shinsuiImagelayer);
+    alltime_hazard_shinsuiImagelayer = new TileLayer({
+      portalItem: {
+        id: id
+      }
+    });
+    alltime_map.layers.add(alltime_hazard_shinsuiImagelayer, 0);
+    alltime_hazard_shinsuiImagelayer.visible = visible;
+    
+    id = config.find(value => value.story_id == Number(story_id)).alltime_shinsui_risk_id;
+    visible = alltime_risk_shinsuiImagelayer.visible;
+    alltime_map.layers.remove(alltime_risk_shinsuiImagelayer);
+    alltime_risk_shinsuiImagelayer = new TileLayer({
+      portalItem: {
+        id: id
+      }
+    });
+    alltime_map.layers.add(alltime_risk_shinsuiImagelayer, 0);
+    alltime_risk_shinsuiImagelayer.visible = visible;
+
+    refreshTimesliderDiv(timeSlider.values[0]);
+    timeslider_view.popup.close();
+    
+    drawTimeSeriesChart();
+    drawInudationDepthChart();
+  });
+
+  $('#change_body').click(function(e){
+
+    if (e.target.textContent == "All Time") {
+      $('#change_body').text("Time Slider");
+    } else {
+      $('#change_body').text("All Time");
+    }
+    $('#body1Div').toggleClass("body-active");
+    $('#body1Div').toggleClass("body-nonactive");
+    $('#body2Div').toggleClass("body-active");
+    $('#body2Div').toggleClass("body-nonactive");
+  });
+
+  $(".switchImage").click(function(e){
+    if (e.target.textContent == "Flood(Hazard)") {
+      $('.imagelayertype').text("Flood(Risk)");
+      timeslider_hazard_shinsuiImagelayer.visible = true;
+      timeslider_risk_shinsuiImagelayer.visible = false;
+      
+      alltime_hazard_shinsuiImagelayer.visible = true;
+      alltime_risk_shinsuiImagelayer.visible = false;
+    } else if (e.target.textContent == "Flood(Risk)") {
+      $('.imagelayertype').text("Flood(None)");
+      timeslider_hazard_shinsuiImagelayer.visible = false;
+      timeslider_risk_shinsuiImagelayer.visible = true;
+      
+      alltime_hazard_shinsuiImagelayer.visible = false;
+      alltime_risk_shinsuiImagelayer.visible = true;
+    } else {
+      $('.imagelayertype').text("Flood(Hazard)");
+      timeslider_hazard_shinsuiImagelayer.visible = false;
+      timeslider_risk_shinsuiImagelayer.visible = false;
+      
+      alltime_hazard_shinsuiImagelayer.visible = false;
+      alltime_risk_shinsuiImagelayer.visible = false;
+    }
+  });
+
+  $(".switchBusroute").click(function(e){
+
+    if (e.target.textContent == "Bus(Summary)") {
+      $('.busroutetype').text("Bus(Suspend)");
+      summary_notavailablerouteGraphicsLayer.visible = true;
+      notavailablerouteGraphicsLayer.visible = false;
+    } else {
+      $('.busroutetype').text("Bus(Summary)");
+      summary_notavailablerouteGraphicsLayer.visible = false;
+      notavailablerouteGraphicsLayer.visible = true;
+    }
+  });
+
+  //Display Rateのチェック
+  $('#check_rate').on('change', function(){
+    drawClassificationChart(timeSlider.values[0]);
+  });
+  
+  //チャートの切り替え
+  $('body').on('click', '.tab' , function() {
+    $('.is-active').removeClass('is-active');
+    $(this).addClass('is-active');
+    $('.is-show').removeClass('is-show');
+    const index = $(this).index();
+    $('.panel').eq(index).addClass('is-show');
+  });
+
+  //セクションごとの従業員数を取得
+  async function getSection_Staff_List() {
+
+    var query = alltime_staffMasterTable.createQuery();
+
+    query.where = "1=1";
+    query.outFields = [
+      "STAFF_SECTION"
+    ];
+
+    query.groupByFieldsForStatistics = "STAFF_SECTION";
+    query.orderByFields = "STAFF_SECTION";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    var response = await alltime_staffMasterTable.queryFeatures(query);
+    var features = response.features;
+
+    for(var i = 0; i< features.length; i++) {
+      var domainlist = response.fields.find(key => key.name=="STAFF_SECTION").domain.codedValues;
+      var section = features[i].attributes["STAFF_SECTION"];
+
+      var section_domain = domainlist.find(value => value.code == section);
+      var section_name = "Non Section";
+      if (section_domain != null) {
+        section_name = section_domain.name;
+      } 
+
+      var count = features[i].attributes["カウント"];
+      section_staff_list[section_name] = count;
+    }
+  }
+
+  function shinsuiFeaturelayer_query(date){
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+
+    notavailablerouteFeturelayer.definitionExpression = "OPERATINGDAY = '" + str_date + "'";
+
+  }
+
+  function shinsuiImagelayer_query(date){
+
+    var mr = new MosaicRule({
+      where: "NAME='" + formatDate(date, 'yyyyMMdd') + "'"
+    }); 
+    timeslider_risk_shinsuiImagelayer.mosaicRule = mr;
+    timeslider_hazard_shinsuiImagelayer.mosaicRule = mr;
+
+  }
+
+  function drawClassificationChart(date) {
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+
+    var query = staffCommutingTable.createQuery();
+
+    //稼働のみ
+    query.where = "STORY_ID = " + story_id + " AND OPERATINGDAY = '" + str_date + "'";
+    query.outFields = [
+      "STAFF_SECTION"
+    ];
+
+    query.groupByFieldsForStatistics = "STAFF_SECTION";
+    query.orderByFields = "STAFF_SECTION";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    staffCommutingTable.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      var available_list = {};
+      var notavailable_list = {};
+      var labels = [];
+      var available_count = [];
+      var notavailable_count = [];
+
+      var display_rate = false;
+      if ($('#check_rate:checked').val() != null) {
+        display_rate = true;
+      }
+
+      //初期化
+      labels = Object.keys(section_staff_list);
+      for (var i = 0; i< labels.length; i++) {
+        if (display_rate == true) {
+          available_list[labels[i]] = 100;
+          notavailable_list[labels[i]] = 0;
+        } else {
+          available_list[labels[i]] = section_staff_list[labels[i]];
+          notavailable_list[labels[i]] = 0;
+        }
+      }
+
+      //件数の取得
+      for(var i = 0; i< features.length; i++) {
+        var domainlist = response.fields.find(key => key.name=="STAFF_SECTION").domain.codedValues;
+        var section = features[i].attributes["STAFF_SECTION"];
+
+        var section_domain = domainlist.find(value => value.code == section);
+        var section_name = "Non Section";
+        if (section_domain != null) {
+          section_name = section_domain.name;
+        } 
+
+        var count = features[i].attributes["カウント"];
+
+        if (display_rate == true) {
+          notavailable_list[section_name] = Math.floor(100 *  count / section_staff_list[section_name]);
+          available_list[section_name] = 100 - notavailable_list[section_name];
+        } else {
+          notavailable_list[section_name] = count;
+          available_list[section_name] = section_staff_list[section_name] - count;
+        }
+      }
+
+      available_count = Object.values(available_list);
+      notavailable_count = Object.values(notavailable_list);
+
+      update_classificationChart(labels, available_count, notavailable_count);
+
+    });
+
+  }
+
+  function update_classificationChart(labels, available_count, notavailable_count){
+
+    var ctx = document.getElementById("classificationChartCanvas").getContext('2d');
+
+    if (classificationChart != null) {
+      classificationChart.destroy();
+    }
+
+    var display_rate = false;
+    if ($('#check_rate:checked').val() != null) {
+      display_rate = true;
+    }
+
+    var xlabel = "People";
+    var xUnit = "";
+    var xStepSize = 50;
+
+    if (display_rate == true) {
+      xlabel = "Rate";
+      xUnit = "%";
+      xStepSize = 50;
+    }
+
+    var datasets = [];
+
+    datasets.push({
+      data: available_count,
+      backgroundColor: "rgba(100,255,150,0.5)"
+    });
+
+    datasets.push({
+      data: notavailable_count,
+      backgroundColor: "rgba(255,0,0,0.5)"
+    });
+
+    var yLabel = "";
+
+    classificationChart = new Chart(ctx, {
+      type: 'horizontalBar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        title: {
+          display: false
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 20,
+            bottom: 20
+          }
+        },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          enabled: false
+        },
+        hover: {
+          animationDuration: 0
+        },
+        animation: {
+          duration: 1,
+          onComplete: function () {
+            var chartInstance = this.chart;
+            var ctx = chartInstance.ctx;
+            ctx.textAlign = "left";
+            ctx.font = "12px Open Sans";
+            ctx.fillStyle = "#fff";
+
+            Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
+              var meta = chartInstance.controller.getDatasetMeta(i);
+              Chart.helpers.each(meta.data.forEach(function (bar, index) {
+
+                if(i==0){
+                  data = " " + dataset.data[index] + xUnit + " Commuting";
+                  ctx.fillText(data, bar._model.base, bar._model.y+4);
+                } else {
+                  data = " " + dataset.data[index] + xUnit + " Not Commuting ";
+                  ctx.fillText(data, bar._model.base, bar._model.y+4);
+                }
+              }),this)
+            }),this);
+          }
+        },
+        scales: {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: xlabel,
+              fontSize: 12
+            },
+            ticks: {
+              beginAtZero: true,
+              stepSize: xStepSize,
+              callback: function(value, index, values){
+                return  value
+              }
+            },
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Section",
+              fontSize: 12
+            },
+            ticks: {
+              beginAtZero: true,
+              userCallback: function(label, index, labels) {
+                if (label == null) {
+                  return "No Type"
+                } else {
+                  return label
+                }
+              }
+            } 
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+  
+  async function drawTimeSeriesChart() {
+    
+    //グラフのクリア
+    var chartTab = $('#timeSeriesChartTab');
+    var cahrtDiv = $('#timeSeriesChartDiv');
+    chartTab.empty();
+    cahrtDiv.empty();
+
+    var query = alltime_staffCommutingTable.createQuery();
+
+    query.where = "STORY_ID = " + story_id ;
+    query.outFields = [
+      "STAFF_SECTION"
+    ];
+
+    query.groupByFieldsForStatistics = "STAFF_SECTION";
+    query.orderByFields = "STAFF_SECTION";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    //Base_type=ALL
+    await drawTimeSeriesChart_PerSection();
+    
+    alltime_staffCommutingTable.queryFeatures(query)
+      .then(async function(response){
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var staff_section = features[i].attributes["STAFF_SECTION"];
+        await drawTimeSeriesChart_PerSection(staff_section);
+      }
+    });
+
+  }
+
+  //function drawTimeSeriesChart() {
+  async function drawTimeSeriesChart_PerSection(staff_section) {
+    
+    var query = alltime_staffCommutingTable.createQuery();
+
+    //Base_type=ALL
+    if (staff_section == null) {
+      query.where = "STORY_ID = " + story_id;
+      query.outFields = [
+        "OPERATINGDAY"
+      ];
+      query.groupByFieldsForStatistics = "OPERATINGDAY";
+    } else {
+      query.where = "STORY_ID = " + story_id + " AND STAFF_SECTION = '" + staff_section + "'";
+      query.outFields = [
+        "STAFF_SECTION,OPERATINGDAY"
+      ];
+      query.groupByFieldsForStatistics = "STAFF_SECTION,OPERATINGDAY";
+    }
+
+    query.returnGeometry = false;
+    query.orderByFields = [
+      "OPERATINGDAY"
+    ];
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    alltime_staffCommutingTable.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      var available_list = {};
+      var notavailable_list = {};
+      var labels = [];
+      var available_count = [];
+      var notavailable_count = [];
+      
+      var title = staff_section;
+      if (staff_section == null) {
+        title = "ALL";
+      } else {
+        var domainlist = response.fields.find(key => key.name=="STAFF_SECTION").domain.codedValues;
+        title = domainlist.find(key => key.code == staff_section).name;
+      }
+      
+      var section_staff_counts = Object.values(section_staff_list);
+      var staff_count = 0;
+      for (var i=0; i<section_staff_counts.length;i++) {
+        staff_count = staff_count + section_staff_counts[i];
+      }
+
+      //初期化
+      var min = new Date(2021, 3, 1);
+      var max = new Date(features[features.length-1].attributes["OPERATINGDAY"]);
+      var current = min;
+      while(current <= max) {
+        var date_txt = formatDate(current, "MM/dd");
+        if (labels.indexOf(date_txt) == -1) {
+          labels.push(date_txt);
+          
+          if (staff_section == null) {
+            available_list[date_txt] = staff_count;
+          } else {
+            available_list[date_txt] = section_staff_list[title];
+          }
+          notavailable_list[date_txt] = 0;
+        }
+
+        var newDate = current.setDate(current.getDate() + 1);
+        current = new Date(newDate);
+      }
+
+      //件数の取得
+      for(var i = 0; i< features.length; i++) {
+        var section = features[i].attributes["STAFF_SECTION"];
+        var date = new Date(features[i].attributes["OPERATINGDAY"]);
+        var date_txt = formatDate(date, "MM/dd");
+        var count = features[i].attributes["カウント"];
+
+        notavailable_list[date_txt] = count;
+        available_list[date_txt] = available_list[date_txt] - count; 
+      }
+
+      available_count = Object.values(available_list);
+      notavailable_count = Object.values(notavailable_list);
+
+      update_timeSeriesChart(section, title, labels, available_count, notavailable_count);
+
+    });
+
+  }
+
+  function update_timeSeriesChart(section, title, labels, available_count, notavailable_count){
+
+    var chartTab = $('#timeSeriesChartTab');
+    var cahrtDiv = $('#timeSeriesChartDiv');
+    var panel_id = 'timeSeriasePanel_' + section;
+
+    if (title == "ALL") {
+      chartTab.append('<li class="tab is-active">' + title + '</li>');
+      cahrtDiv.append('<div id="' + panel_id + '" class="panel is-show"/>');
+    } else {
+      chartTab.append('<li class="tab">' + title + '</li>');
+      cahrtDiv.append('<div id="' + panel_id + '" class="panel"/>');
+    }
+    
+    //Canvas生成
+    var canvas_id = 'timeSeriaseChart_' + section;
+    element = $('<canvas id="' + canvas_id + '" />');
+    $('#' + panel_id).append(element); 
+    
+    var ctx = document.getElementById(canvas_id).getContext('2d');
+    //var ctx = $('#' + canvas_id).get(0).getContext('2d');
+
+    //if (timeSeriesChart != null) {
+    //  timeSeriesChart.destroy();
+    //}
+
+    var datasets = [];
+
+    datasets.push({
+      label: "Commuting People",
+      data: available_count,
+      backgroundColor: "rgba(100,255,150,0.8)"
+    });
+
+    datasets.push({
+      label: "Not Commuting People",
+      data: notavailable_count,
+      backgroundColor: "rgba(255,0,0,0.8)"
+    });
+
+    var yLabel = "";
+
+    timeSeriesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        title: {
+          display: false,
+          fontSize: 11,
+          fontFamily: "sans-serif",
+          text: title
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 20,
+            bottom: 20
+          }
+        },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          enabled: true
+        },
+        hover: {
+          animationDuration: 0
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "Time"
+            },
+            ticks: {
+              display: true, 
+              callback: function(value, index, values){
+                return value
+              },
+              autoSkip: true,
+              maxTicksLimit: 2
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: title,
+              fontSize: 12
+            },
+            ticks: {
+              beginAtZero: true,
+              userCallback: function(label, index, labels) {
+                return label
+              }
+            },
+            stacked: true
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: true
+      }
+    });
+  }
+  
+  async function drawInudationDepthChart() {
+
+    var query = alltime_inudation_depthFeturelayer.createQuery();
+    
+    query.where = "STORY_ID = " + story_id;
+    query.outFields = [
+      "BASE_ID"
+    ];
+    query.groupByFieldsForStatistics = "BASE_ID";
+    query.orderByFields = "BASE_ID";
+    
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    var response = await alltime_inudation_depthFeturelayer.queryFeatures(query);
+    drawInudationDepthPerBaseIdChart(response);
+  }
+
+  async function drawInudationDepthPerBaseIdChart(response) {
+    var features = response.features;
+    
+    var inudation_dataset = [];
+    for (var i=0;i<features.length;i++) {
+      var base_id = features[i].attributes["BASE_ID"];
+
+      var query = alltime_inudation_depthFeturelayer.createQuery();
+      query.where = "STORY_ID = " + story_id + " AND BASE_ID = " + base_id;
+      query.outFields = [
+        "BASE_ID,OPERATINGDAY,INUDATION_DEPTH"
+      ];
+      query.orderByFields = "OPERATINGDAY";
+
+      var response1 = await alltime_inudation_depthFeturelayer.queryFeatures(query);
+      var features1 = response1.features;
+
+      var label_list = {};
+      var inudation_list = {};
+      var label_dataset = null;
+      
+      for (var j=0;j<features1.length;j++) {
+        var base_id = features1[j].attributes["BASE_ID"];
+        var date = new Date(features1[j].attributes["OPERATINGDAY"]);
+        var date_txt = formatDate(date, "MM/dd");
+        
+        var value = features1[j].attributes["INUDATION_DEPTH"];
+        var value_txt = Math.round(value*10000) / 10000;
+        
+        label_list[date] = date_txt;
+        inudation_list[date] = value_txt;
+      }
+
+      label_dataset = Object.values(label_list);
+      inudation_dataset.push({
+        id: base_id,
+        data: Object.values(inudation_list)
+      });
+
+    }
+    update_InudationDepthChart(label_dataset, inudation_dataset)
+  }
+
+
+  function update_InudationDepthChart(labels, inudations){
+
+    if (inundationDepthChart != null) {
+      inundationDepthChart.destroy();
+    }
+    
+    var ctx = document.getElementById("inundationDepthChartCanvas");
+    var datasets = [];
+    var colors = [
+      "rgba(255,0,0,1)",
+      "rgba(0,0,255,1)",
+      "rgba(0,255,0,1)",
+      "rgba(255,0,255,1)",
+    ];
+
+    for (var i=0;i<inudations.length;i++) {
+      datasets.push({
+        label: inudations[i].id,
+        fill: false,
+        borderWidth: 1, 
+        data: inudations[i].data,
+        pointRadius: 0,
+        borderColor: colors[i%colors.length] 
+      });  
+    }
+    var yLabel = "";
+
+    inundationDepthChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        title: {
+          display: false,
+          fontSize: 11,
+          fontFamily: "sans-serif",
+          text: "Inudation Depth"
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 20,
+            bottom: 0
+          }
+        },
+        legend: {
+          display: true
+        },
+        tooltips: {
+          enabled: true,
+          mode: 'index'
+        },
+        hover: {
+          animationDuration: 0
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "Time"
+            },
+            ticks: {
+              display: true, 
+              callback: function(value, index, values){
+                return value
+              },
+              autoSkip: true,
+              maxTicksLimit: 2
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Inudation Depth(m)",
+              fontSize: 12
+            },
+            ticks: {
+              beginAtZero: true,
+              userCallback: function(label, index, labels) {
+                return label
+              },
+              //suggestedMax: 5.00,
+              suggestedMin: 0.00,
+              stepSize: 0.5
+            },
+            stacked: false
+          }]
+        },
+        responsive: true,
+        //maintainAspectRatio: true
+      }
+    });
+  }
+
+
+  function absenceleaders_query(date) {
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+
+    var query = staffCommutingTable.createQuery();
+
+    query.where = "STORY_ID = " + story_id + " AND OPERATINGDAY = '" + str_date + "' AND LEADER = 1";
+    query.outFields = [
+      "*"
+    ];
+    query.orderByFields = "STAFF_ID";
+
+    staffCommutingTable.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      $('#absence-of-leaders-list').empty();
+
+      for(var i = 0; i< features.length; i++) {
+        var sectionfield = response.fields.find(value => value.name == "STAFF_POSITION");
+        var positionfield = response.fields.find(value => value.name == "STAFF_SECTION");
+        var sectiondomain = sectionfield.domain.codedValues;
+        var positiondomain = positionfield.domain.codedValues;
+        
+        var staff_id = features[i].attributes["STAFF_ID"];
+        var name = features[i].attributes["NAME"];
+        var staff_section = features[i].attributes["STAFF_SECTION"];
+        var staff_position = features[i].attributes["STAFF_POSITION"];
+        var section_domain = sectiondomain.find(value => value.code == staff_section);
+        var section_name = "Non Section";
+        if (section_domain != null) {
+          section_name = section_domain.name;
+        }
+
+        var staff_position = features[i].attributes["STAFF_POSITION"];
+
+        var position_domain = positiondomain.find(value => value.code == staff_position);
+        var position_name = "Non Position";
+        if (position_domain != null) {
+          position_name = position_domain.name;
+        }
+
+        $('#absence-of-leaders-list').append('<li>Section:' + section_name + ' Position:' + position_name + '<br>STAFF:' + staff_id + ' NAME:' + name + '</li>');
+      }
+    });
+
+  }
+
+  function suspendlist_query(date) {
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+
+    var query = notavailablerouteFeturelayer.createQuery();
+
+    query.where = "STORY_ID = " + story_id + "AND OPERATINGDAY = '" + str_date + "'";
+    query.outFields = [
+      "*"
+    ];
+    query.orderByFields = "ROUTE_ID";
+    query.returnGeometry = false;
+
+    notavailablerouteFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      $('#supend-busroute-list').empty();
+      suspended_route_ids = [];
+
+      for(var i = 0; i< features.length; i++) {
+        var domainlist = response.fields.find(key => key.name=="BUS_TYPE").domain.codedValues;
+        var route_id = features[i].attributes["ROUTE_ID"];
+        suspended_route_ids.push(route_id);
+
+        var name = features[i].attributes["NAME"];
+        var bus_type = features[i].attributes["BUS_TYPE"];
+        var bus_type_domain = domainlist.find(value => value.code == bus_type);
+        var bus_type_name = "Non Type";
+        if (bus_type_domain != null) {
+          bus_type_name = bus_type_domain.name;
+        } 
+        var depth = features[i].attributes["INUDATION_DEPTH"];
+        var operatingday = new Date(features[i].attributes["OPERATINGDAY"]);
+
+        var str_operatingday = operatingday.getFullYear() + "/" + (operatingday.getMonth()+1) + "/" + operatingday.getDate();
+
+        $('#supend-busroute-list').append('<li id="' + route_id + ',' + str_operatingday + '">BusRoute:' + route_id + ' ' + name + '<br>TYPE:' + bus_type_name + '<br/>INUDATION_DEPTH:' + depth + '</li>');
+      }
+
+      suspend_route_addgraphic();
+    });
+  }
+  
+  function suspend_route_addgraphic(){
+
+    var query = routeFeturelayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["ROUTE_ID"];
+    //query.maxAllowableOffset = 0.001;
+
+    routeFeturelayer.queryFeatures(query)
+      .then(function(response){
+      
+      notavailablerouteGraphicsLayer.removeAll();
+      
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        
+        var graphic = features[i];
+        graphic.symbol = {
+          type: "simple-line",
+          color: "green",
+          width: "2px",
+          style: "solid"
+        };
+
+        if (suspended_route_ids.indexOf(route_id) != -1) {
+          graphic.symbol.color = "red"; 
+        }
+        
+        notavailablerouteGraphicsLayer.add(graphic);
+      }
+    });
+  }
+  
+  function getSuspend_Bus_RouteGraphic(date) {
+    
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+
+    var query = notavailablerouteFeturelayer.createQuery();
+    query.where = "STORY_ID = " + story_id + "AND OPERATINGDAY <= '" + str_date + "'";
+    query.outFields = [
+      "ROUTE_ID"
+    ];
+    query.returnGeometry = false;
+
+    query.groupByFieldsForStatistics = "ROUTE_ID";
+    query.orderByFields = "ROUTE_ID";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    notavailablerouteFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      summary_suspended_route_ids = {};
+
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        var count = features[i].attributes["カウント"];
+        summary_suspended_route_ids[route_id] = count;
+      }
+      
+      summary_notavailableroute_addgraphic();
+    });
+  }
+  
+  function summary_notavailableroute_addgraphic(){
+
+    var query = routeFeturelayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["ROUTE_ID, NAME"];
+
+    routeFeturelayer.queryFeatures(query)
+      .then(function(response){
+      
+      summary_notavailablerouteGraphicsLayer.removeAll();
+      
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        
+        var graphic = features[i];
+        graphic.symbol = {
+          type: "simple-line",
+          color: "green",
+          width: "2px",
+          style: "solid"
+        };
+
+        var route_ids = Object.keys(summary_suspended_route_ids);
+
+        if (route_ids.indexOf(route_id) == -1) {
+          graphic.attributes["COUNT"] = summary_suspended_route_ids[route_id];
+
+          if (summary_suspended_route_ids[route_id] > 180) { 
+            graphic.symbol.color = "red";
+          } else if (summary_suspended_route_ids[route_id] > 150) { 
+            graphic.symbol.color = "orange";
+          } else if (summary_suspended_route_ids[route_id] > 120) { 
+            graphic.symbol.color = "yellow";
+          } else { 
+            graphic.symbol.color = "green";
+          }             
+        } else {
+          graphic.attributes["COUNT"] = 0;
+        }
+
+        graphic.popupTemplate = {
+          title: "{NAME}",
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "ROUTE_ID",
+                  label: "ROUTE_ID"
+                },
+                {
+                  fieldName: "NAME",
+                  label: "NAME"
+                },
+                {
+                  fieldName: "COUNT",
+                  label: "Suspend Days"
+                }
+              ]
+            }
+          ]
+        };
+        
+        summary_notavailablerouteGraphicsLayer.add(graphic);
+      }
+    });
+  }
+  
+  function getalltimeSuspend_Bus_RouteGraphic() {
+
+    var query = alltime_notavailablerouteFeturelayer.createQuery();
+
+    query.where = "STORY_ID = " + story_id;
+    query.outFields = [
+      "ROUTE_ID"
+    ];
+    query.returnGeometry = false;
+
+    query.groupByFieldsForStatistics = "ROUTE_ID";
+    query.orderByFields = "ROUTE_ID";
+
+    query.outStatistics = [
+      {
+        statisticType: "count",
+        onStatisticField: "ObjectId",
+        outStatisticFieldName: "カウント"
+      }
+    ]
+
+    alltime_notavailablerouteFeturelayer.queryFeatures(query)
+      .then(function(response){
+      var features = response.features;
+
+      alltime_summary_suspended_route_ids = {};
+
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        var count = features[i].attributes["カウント"];
+        alltime_summary_suspended_route_ids[route_id] = count;
+      }
+      
+      alltime_summary_notavailableroute_addgraphic();
+    });
+  }
+  
+  function alltime_summary_notavailableroute_addgraphic(){
+
+    var query = routeFeturelayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["ROUTE_ID, NAME"];
+
+    routeFeturelayer.queryFeatures(query)
+      .then(function(response){
+      
+      alltime_summary_notavailablerouteGraphicsLayer.removeAll();
+      
+      var features = response.features;
+      
+      for(var i = 0; i< features.length; i++) {
+        var route_id = features[i].attributes["ROUTE_ID"];
+        
+        var graphic = features[i];
+        graphic.symbol = {
+          type: "simple-line",
+          color: "green",
+          width: "2px",
+          style: "solid"
+        };
+
+        var route_ids = Object.keys(alltime_summary_suspended_route_ids);
+
+        if (route_ids.indexOf(route_id) == -1) {
+          graphic.attributes["COUNT"] = alltime_summary_suspended_route_ids[route_id];
+
+          if (alltime_summary_suspended_route_ids[route_id] > 180) { 
+            graphic.symbol.color = "red";
+          } else if (alltime_summary_suspended_route_ids[route_id] > 150) { 
+            graphic.symbol.color = "orange";
+          } else if (alltime_summary_suspended_route_ids[route_id] > 120) { 
+            graphic.symbol.color = "yellow";
+          } else { 
+            graphic.symbol.color = "green";
+          }             
+        } else {
+          graphic.attributes["COUNT"] = 0;
+        }
+
+        graphic.popupTemplate = {
+          title: "{NAME}",
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "ROUTE_ID",
+                  label: "ROUTE_ID"
+                },
+                {
+                  fieldName: "NAME",
+                  label: "NAME"
+                },
+                {
+                  fieldName: "COUNT",
+                  label: "Suspend Days"
+                }
+              ]
+            }
+          ]
+        };
+        
+        alltime_summary_notavailablerouteGraphicsLayer.add(graphic);
+      }
+    });
+  }
+  
+  function timeslider_view_setwidget() {
+    var lgExpand = new Expand({
+      view: timeslider_view,
+      expanded: false,
+      mode : "floating"
+    });
+    timeslider_view.ui.add(lgExpand, "bottom-right");
+
+    var legend = new Legend({
+      view: timeslider_view,
+      respectLayerVisibility: true
+    });
+
+    lgExpand.content = legend;
+  }
+});
+
+function formatDate(date, format) {
+  format = format.replace(/yyyy/g, date.getFullYear());
+  format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+  format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+  format = format.replace(/HH/g, ('0' + date.getHours()).slice(-2));
+  format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+  format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+  format = format.replace(/SSS/g, ('00' + date.getMilliseconds()).slice(-3));
+  return format;
+};
+
+const wait = (sec) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, sec*1000);
+    });
+};
+    </script>
+
+  
+
+</body>
+
+</html>
+ 
