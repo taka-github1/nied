@@ -26,6 +26,11 @@ body,
   color: white;
 }
 
+#select_storyId {
+  border-radius: 5px;
+  padding: 10;
+}
+
 #headerDiv {
   display: flex;
   justify-content: space-evenly;
@@ -80,6 +85,29 @@ body,
   padding: 0;
   height: 100%;
   width: 30%;
+}
+
+#timeslider_InundationDepthDiv {
+  height: 40%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inundation-depth-panel {
+  display: flex;
+  flex-direction: row;
+}
+
+.inundation-depth-image {
+  height: 30px;
+  width: auto;
+  padding: 5px;
+}
+
+#timeslider_SuspendedSupplyChainDiv {
+  height: 60%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -340,11 +368,27 @@ alltime_InundationDepth {
             </div>
           </div>
           <div id="timeslider_mapviewDiv"></div>
+          <!--
           <div id="timeslider_rightDiv">
             <span class="subtitle">Suspended Supply Chain</span>
             <ul id="supply-chain-list">
             </ul>
             <div>No Data</div>
+          </div>
+          -->
+          <div id="timeslider_rightDiv">
+            <div id="timeslider_InundationDepthDiv">
+              <span class="subtitle">Observatory inundation depth</span>
+              <ul id="inundation-depth-list">
+              </ul>
+              <div>No Data</div>
+            </div>
+            <div id="timeslider_SuspendedSupplyChainDiv">
+              <span class="subtitle">Suspended Supply Chain</span>
+              <ul id="supply-chain-list">
+              </ul>
+              <div>No Data</div>
+            </div>
           </div>
         </div>
         <div id="timeslider_footerDiv">
@@ -427,9 +471,11 @@ require([
 
   var supplyFeturelayer = null;
   var supply_availableFeturelayer = null;
+  var timeslider_obeservatory_Feturelayer = null;
   var timeslider_hazard_shinsuiImagelayer = null;
   var timeslider_risk_shinsuiImagelayer = null;
   var summary_notavailableGraphicsLayer = null;
+  var obeservatoryInudationDepthTable = null;
 
   var alltime_obeservatoryFeturelayer = null;
   var alltime_supplyFeturelayer = null;
@@ -447,6 +493,10 @@ require([
   var alltime_summary_suspended_ids = [];
 
   let highlightSelect;
+  
+  var img_url_continue = "continue_arrow.png";
+  var img_url_up = "up_arrow.png";
+  var img_url_down = "down_arrow.png";
   
   var config = null;
 
@@ -566,6 +616,10 @@ require([
       value => value.title == "サプライチェーン");
     supply_availableFeturelayer = layers.layers.find(
       value => value.title == "Supply Chain Available");
+    timeslider_obeservatory_Feturelayer = layers.layers.find(
+      value => value.title == "OBESERVATORY");
+    obeservatoryInudationDepthTable = layers.tables.find(
+      value => value.title == "INUDATION_DEPTH_TBL");
     timeslider_hazard_shinsuiImagelayer = layers.layers.find(
       value => value.title == "Flood(Hazard)");
     timeslider_risk_shinsuiImagelayer = layers.layers.find(
@@ -604,6 +658,10 @@ require([
 
     //Suspend Suppy Chainリスト選択
     timeslider_view.whenLayerView(supply_availableFeturelayer).then(function(layerView) {
+      $('body').on('click', '#inundation-depth-list li', function(e){
+        observatory_feature_highlight(e);
+      });
+      
       $('body').on('click', '#supply-chain-list li', function(e){
 
         for (let li of $('li')) {
@@ -611,10 +669,42 @@ require([
         }
         e.preventDefault();
         e.target.classList.add("li_selected");
-        feature_highlight(e);
+        supplychain_feature_highlight(e);
       });
+      
+      function observatory_feature_highlight(event) {
+        let id = event.target.id;
+        
+        if (event.target.tagName != "LI") {
+          id = event.target.parentElement.id;
+        }
+        
+        if (id == "") return;
 
-      function feature_highlight(event) {
+        var query = timeslider_obeservatory_Feturelayer.createQuery();
+        query.where = "BASE_ID=" + id;
+
+        timeslider_obeservatory_Feturelayer.queryFeatures(query).then(function(result) {
+
+          var feature = result.features[0];
+
+          timeslider_view.goTo(
+            {
+              target: feature.geometry
+            },
+            {
+              duration: 1000,
+              easing: "in-out-expo"
+            }
+          ).catch(function(error){
+            if (error.name != "AbortError"){
+              console.log(error);
+            }
+          });
+        });
+      }
+
+      function supplychain_feature_highlight(event) {
 
         let value = event.target.id.split(',');
 
@@ -660,6 +750,7 @@ require([
     drawClassificationChart(date);
     suspendlist_query(date);
     getSuspend_Graphic(date);
+    obeservatory_inundation_query(date);
   }
 
   //storyIDの変更時
@@ -1386,6 +1477,99 @@ require([
         //maintainAspectRatio: false
       }
     });
+  }
+  
+  //観測所ごとの浸水深表示
+  async function obeservatory_inundation_query(date) {
+
+    var str_date = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate();
+    var before_date = new Date(date.getTime());
+    before_date.setDate(before_date.getDate() - 1);
+    var str_before_date = before_date.getFullYear() + "/" + (before_date.getMonth()+1) + "/" + before_date.getDate();
+
+    var query = obeservatoryInudationDepthTable.createQuery();
+
+    query.where = "STORY_ID = " + story_id 
+    query.where += " AND (OPERATINGDAY = '" + str_date + "' OR OPERATINGDAY = '" + str_before_date + "')";
+    query.outFields = [
+      "*"
+    ];
+    query.orderByFields = "BASE_ID,OPERATINGDAY";
+    query.returnGeometry = false;
+
+    var response = await obeservatoryInudationDepthTable.queryFeatures(query);
+    var features = response.features;
+    
+    var obeservatory_list = {}
+    var depth_list = {}
+    var diff_depth_list = {}
+
+    $('#inundation-depth-list').empty();
+    
+    //観測所ごとの浸水深を取得
+    for(var i = 0; i< features.length; i++) {
+      var base_id = features[i].attributes["BASE_ID"];
+      var depth = features[i].attributes["INUDATION_DEPTH"];
+      var round_depth = Math.round(depth*100) / 100;
+      var operatingday = new Date(features[i].attributes["OPERATINGDAY"]);
+
+      var str_operatingday = operatingday.getFullYear() + "/" + (operatingday.getMonth()+1) + "/" + operatingday.getDate();
+      
+      if ((base_id in depth_list) == false) {
+        depth_list[base_id] = 0;
+        diff_depth_list[base_id] = 0;
+      }
+      
+      if (str_operatingday == str_date) {
+        depth_list[base_id] = round_depth;
+        diff_depth_list[base_id] += depth;
+      } else {
+        diff_depth_list[base_id] -= depth;
+      }
+    }
+    
+    query = timeslider_obeservatory_Feturelayer.createQuery();
+
+    query.where = "1=1";
+    query.outFields = [
+      "*"
+    ];
+    query.orderByFields = "BASE_ID";
+    query.returnGeometry = false;
+
+    var response = await timeslider_obeservatory_Feturelayer.queryFeatures(query);
+    var features = response.features;
+    
+    //観測所名を取得
+    for(var i = 0; i< features.length; i++) {
+      var base_id = features[i].attributes["BASE_ID"];
+      var name = features[i].attributes["NAME"];
+      obeservatory_list[base_id] = name;
+    }
+    
+    //観測所ごとの浸水深を表示
+    for(var base_id in obeservatory_list) {
+      if(obeservatory_list.hasOwnProperty(base_id) && depth_list.hasOwnProperty(base_id) && diff_depth_list.hasOwnProperty(base_id)) {
+        var name = obeservatory_list[base_id];
+        var depth = depth_list[base_id];
+        var diff = diff_depth_list[base_id];
+        
+        var list_html = '<li id="' + base_id + '" class="inundation-depth-panel">';
+        
+        if (diff == 0) {
+          list_html += '<img src="' + img_url_continue + '" class="inundation-depth-image"/>'
+        } else if (diff > 0) {
+          list_html += '<img src="' + img_url_up + '" class="inundation-depth-image"/>'
+        } else if (diff < 0) {
+          list_html += '<img src="' + img_url_down + '" class="inundation-depth-image"/>'
+        }
+        
+        list_html += '<span>OBESERVATORY:　' + base_id + ":" + name + '<br>INUDATION_DEPTH:　' + depth + '</span>'
+        list_html += '</li>';
+        
+        $('#inundation-depth-list').append(list_html);
+      }
+    }
   }
 
   function suspendlist_query(date) {
