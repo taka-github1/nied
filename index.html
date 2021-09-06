@@ -14,7 +14,7 @@
 <style>
 html,
 body{
-  background-color: white;
+  background-color: black;
   color: black;
   width: 99%;
   height: 100%;
@@ -33,7 +33,7 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid #000000;
+  border: 3px solid #F0F0F0;
   border-radius: 20px;
   padding: 10px 10px 20px 10px;
   height: auto;
@@ -41,9 +41,10 @@ body{
 }
 
 .menu-title {
+  color: white;
   display: flex;
   align-items: center;
-  font-size: 24px;
+  font-size: 18px;
   padding-bottom: 5px;
   vertical-align: middle;
   text-align: center;
@@ -55,7 +56,8 @@ body{
 }
 
 .menu-keepout {
-  font-size: 24px;
+  color: white;
+  font-size: 16px;
   padding: 50px;
   vertical-align: middle;
 }
@@ -165,28 +167,32 @@ button:hover {
   display: none;
 }
 
+.esri-icon-color {
+  color: white;
+}
+
 .manager {
   display: none;
 }
 
 #operatiingDiv {
-  background-color: rgba(255,255,153,1);
+  background-color: #AC6A00;
 }
 
 #materialsDiv {
-  background-color: rgba(204,255,255,1);
+  background-color: #004986;
 }
 
 #valueAddingDiv {
-  background-color: rgba(50,204,205,1);
+  background-color: #007130;
 }
 
 #productsDiv {
-  background-color: rgba(204,255,255,1);
+  background-color: #004986;
 }
 
 #wasteDiv {
-  background-color: rgba(255,255,153,1);
+  background-color: #AC6A00;
 }
 </style>
 
@@ -224,7 +230,8 @@ button:hover {
           <td class="td-menu-grid">
             <div id="operatiingDiv" class="menu-panel">
               <span class="menu-title">Operatiing Resources</span>
-              <img class="menu-image" src="https://taka-github1.github.io/nied/%E3%83%90%E3%82%B9%E9%80%9A%E5%8B%A4%E3%82%A2%E3%83%97%E3%83%AA.png"/>
+              <!--<img class="menu-image" src="%E3%83%90%E3%82%B9%E9%80%9A%E5%8B%A4%E3%82%A2%E3%83%97%E3%83%AA.png"/>-->
+              <img class="menu-image" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/c911fc629c584dfea132c1ed27aa85e5/data">
               <div class="btn-list">
                 <button id="bus-commuting-viewer" class="viewer">Viewer</button>
                 <button id="staff-maintenance" class="manager">Edit</button>
@@ -236,7 +243,7 @@ button:hover {
         <tr class="tr-arrow-grid">
           <td class="td-arrow-grid"></td>
           <td class="td-arrow-grid">
-              <div class="esri-icon-arrow-down"/>
+              <div class="esri-icon-arrow-down esri-icon-color"/>
           </td>
           <td class="td-arrow-grid"></td>
         </tr>
@@ -244,7 +251,8 @@ button:hover {
           <td class="td-menu-grid">
             <div id="materialsDiv" class="menu-panel">
               <span class="menu-title">Materials/Supply</span>
-              <img class="menu-image" src="https://taka-github1.github.io/nied/%E3%82%B5%E3%83%97%E3%83%A9%E3%82%A4%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA.png"/>
+              <!--<img class="menu-image" src="%E3%82%B5%E3%83%97%E3%83%A9%E3%82%A4%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA.png"/>-->
+              <img class="menu-image" src="https://ej-nagoya.maps.arcgis.com/sharing/rest/content/items/5502f07c4aff40c2b19fd971b5878946/data">
               <div class="btn-list">
                 <button id="supply-viewer" class="viewer">Viewer</button>
                 <button id="supply-maintenance" class="manager">Edit</button>
@@ -252,7 +260,7 @@ button:hover {
             </div>
           </td>
           <td class="td-arrow-grid">
-              <div class="esri-icon-right-arrow"/>
+              <div class="esri-icon-right-arrow esri-icon-color"/>
           </td>
           <td class="td-menu-grid">
             <div id="valueAddingDiv" class="menu-panel">
@@ -261,7 +269,7 @@ button:hover {
             </div>
           </td>
           <td class="td-arrow-grid">
-              <div class="esri-icon-right-arrow"/>
+              <div class="esri-icon-right-arrow esri-icon-color"/>
           </td>
           <td class="td-menu-grid">
             <div id="productsDiv" class="menu-panel">
@@ -273,7 +281,7 @@ button:hover {
         <tr class="tr-arrow-grid">
           <td class="td-arrow-grid"></td>
           <td class="td-arrow-grid">
-              <div class="esri-icon-arrow-down"/>
+              <div class="esri-icon-arrow-down esri-icon-color"/>
           </td>
           <td class="td-arrow-grid"></td>
         </tr>
@@ -310,7 +318,7 @@ require([
         Portal, OAuthInfo, identityManager) {
   
   //configの読み込み
-  var json_url = "https://taka-github1.github.io/nied/main_menu_confin.json";
+  var json_url = "main_menu_confin.json";
 
   $.ajaxSetup({async: false});
   $.getJSON(json_url, function(json) {
@@ -381,8 +389,6 @@ require([
     });
   }
   
-  
-  
   $('#bus-commuting-viewer').click(function() {
     window.open(config.operatiing_viewer_url, '_blank');
   });
@@ -397,8 +403,6 @@ require([
   });
   
 });
-
-
     </script>
 
   
