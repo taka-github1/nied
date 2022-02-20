@@ -1,5 +1,4 @@
 {
   "application_id": "Sa4aa6rGeVfPJwqh", 
-  "operatiing_webmap_tag": "operatiing",
-  "materials_webmap_tag": "materials"
+  "item_tags": ["operatiing_webmap1", "operatiing_webmap2", "materials_webmap1", "materials_webmap2"]
 }
