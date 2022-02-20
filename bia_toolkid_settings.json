@@ -1,5 +1,7 @@
 {
   "application_id": "Sa4aa6rGeVfPJwqh",
+  "pointAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PointAnalysis",
+  "polylineAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PolylineAnalysis",
   "operatiing_viewer_url": "https://taka-github1.github.io/nied/bus_risk_app_v04.html",
   "operatiing_edit_url": "https://taka-github1.github.io/nied/staff_master_maintenance_v04.html",
   "materials_viewer_url": "https://taka-github1.github.io/nied/supply_chain_app_v04.html",
