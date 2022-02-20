@@ -2,20 +2,23 @@
   "application_id": "Sa4aa6rGeVfPJwqh", 
   "content_items": [
     {
-      "name": "operatiing_webmap1"
+      "name": "operatiing_webmap1",
       "type": "web",
       "tag": "operatiing_webmap1"
     },
     {
-      "name": "operatiing_webmap2"
+      "name": "operatiing_webmap2",
+      "type": "web",
       "tag": "operatiing_webmap2"
     },
     {
-      "name": "materials_webmap1"
+      "name": "materials_webmap1",
+      "type": "web",
       "tag": "materials_webmap1"
     },
     {
-      "name": "materials_webmap2"
+      "name": "materials_webmap2",
+      "type": "web",
       "tag": "materials_webmap2"
     }
   ]
