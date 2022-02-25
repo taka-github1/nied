@@ -4,13 +4,53 @@
   "polylineAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PolylineAnalysis",
   "operatiing_viewer_url": "https://taka-github1.github.io/nied/bus_risk_app_v04.html",
   "operatiing_edit_url": "https://taka-github1.github.io/nied/staff_master_maintenance_v04.html",
-  "materials_viewer_url": "https://taka-github1.github.io/nied/supply_chain_app_v04.html",
+  "materials_viewer_url": "materials_viewer.html",
   "materials_edit_url": "https://bosai.maps.arcgis.com/apps/webappviewer/index.html?id=b684179e43c44d63ba6f0840d343400d", 
   "content_items": [
+    {
+      "name": "operatiing_webmap1",
+      "type": "Web Map",
+      "tag": "operatiing_webmap1"
+    },
+    {
+      "name": "operatiing_webmap2",
+      "type": "Web Map",
+      "tag": "operatiing_webmap2"
+    },
+    {
+      "name": "bus_master",
+      "type": "Feature Service",
+      "tag": "bus_master"
+    },
+    {
+      "name": "staff_master",
+      "type": "Feature Service",
+      "tag": "staff_master"
+    },
+    {
+      "name": "bus_available",
+      "type": "Feature Service",
+      "tag": "bus_available"
+    },
+    {
+      "name": "busroute_view",
+      "type": "Feature Service",
+      "tag": "busroute_view"
+    },
+    {
+      "name": "busstop_view",
+      "type": "Feature Service",
+      "tag": "busstop_view"
+    },
     {
       "name": "materials_webmap1",
       "type": "Web Map",
       "tag": "materials_webmap1"
+    },
+    {
+      "name": "materials_webmap2",
+      "type": "Web Map",
+      "tag": "materials_webmap2"
     },
     {
       "name": "materials_master",
