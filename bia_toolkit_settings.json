@@ -67,5 +67,21 @@
       "type": "Feature Service",
       "tag": "materials_view"
     }
+  ],
+  "stories": [
+    {
+      "story_id": 1,
+      "story_label": "Test Story 1",
+      "shinsuiImage_url": "https://nied-labo.bosai.go.jp/webgis/rest/services/satreps/satreps_thai_shinsui_r03/ImageServer",
+      "alltime_shinsui_hazard_id": "f6cdd9f0d68f48b6be02cd272215cf60",
+      "alltime_shinsui_risk_id": "41838157b10b46c99a8966540c1b51d4"
+    },
+    {
+      "story_id": 99,
+      "story_label": "Test Story 99",
+      "shinsuiImage_url": "https://nied-labo.bosai.go.jp/webgis/rest/services/satreps/satreps_thai_shinsui/ImageServer",
+      "alltime_shinsui_hazard_id": "5f0b80e3587849bb9469242306c3a83d",
+      "alltime_shinsui_risk_id": "08ba3d175a5b45448beaa3ce96ebd318"
+    }
   ]
 }
