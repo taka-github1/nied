@@ -2,20 +2,15 @@
   "application_id": "Sa4aa6rGeVfPJwqh",
   "pointAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PointAnalysis",
   "polylineAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PolylineAnalysis",
-  "operatiing_viewer_url": "https://taka-github1.github.io/nied/bus_risk_app_v04.html",
-  "operatiing_edit_url": "https://taka-github1.github.io/nied/staff_master_maintenance_v04.html",
+  "operatiing_viewer_url": "operatiing_viewer.html",
+  "operatiing_edit_url": "staff_maintenance.html",
   "materials_viewer_url": "materials_viewer.html",
   "materials_edit_url": "materials_maintenance.html", 
   "content_items": [
     {
-      "name": "operatiing_webmap1",
+      "name": "operatiing_webmap",
       "type": "Web Map",
-      "tag": "operatiing_webmap1"
-    },
-    {
-      "name": "operatiing_webmap2",
-      "type": "Web Map",
-      "tag": "operatiing_webmap1"
+      "tag": "operatiing_webmap"
     },
     {
       "name": "bus_master",
@@ -43,14 +38,9 @@
       "tag": "busstop_view"
     },
     {
-      "name": "materials_webmap1",
+      "name": "materials_webmap",
       "type": "Web Map",
-      "tag": "materials_webmap1"
-    },
-    {
-      "name": "materials_webmap2",
-      "type": "Web Map",
-      "tag": "materials_webmap1"
+      "tag": "materials_webmap"
     },
     {
       "name": "materials_master",
