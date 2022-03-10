@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>Supply Chain Flood Risk Simulation</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/dark-red/main.css"/>
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.0.0-beta.77/calcite.css" />
+    <link rel="stylesheet" type="text/css" href="css/materials_viewer.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script type="module" src="https://js.arcgis.com/calcite-components/1.0.0-beta.77/calcite.esm.js"></script>
+    <script src="js/materials_viewer.js"></script>
+  </head>
+  <body>
+    <div id="titlePanel">
+      <a id="mainpage_link" href="main_page.html">
+        <img class="title-image" src="https://taka-github1.github.io/nied/supply_chain_risk.png"/>
+      </a>
+      <span class="title">Supply Chain Flood Risk Simulation</span>
+      <div class="setting_button">
+        <calcite-dropdown id="setting" overlay-positioning="fixed" scale="m" width="s" class="calcite-theme-dark">
+          <calcite-button slot="dropdown-trigger" icon-start="gear" color="Inverse" width="s">Change Setting</calcite-button>
+          <calcite-dropdown-group id="choise_showMode"  group-title="Show Mode">
+            <calcite-dropdown-item label="1" active>Time Slider</calcite-dropdown-item>
+            <calcite-dropdown-item label="2">All Time</calcite-dropdown-item>
+          </calcite-dropdown-group>
+          <calcite-dropdown-group id="choise_storyId"  group-title="Show Story">
+          </calcite-dropdown-group>
+          <calcite-dropdown-group id="choise_floodMode"  group-title="Flood Show Mode">
+            <calcite-dropdown-item active>Flood(Hazard)</calcite-dropdown-item>
+            <calcite-dropdown-item >Flood(Risk)</calcite-dropdown-item>
+            <calcite-dropdown-item >None</calcite-dropdown-item>
+          </calcite-dropdown-group>
+          <calcite-dropdown-group id="choise_avalableMode"  group-title="Avalable Show Mode">
+            <calcite-dropdown-item active>Suspend</calcite-dropdown-item>
+            <calcite-dropdown-item >Summary</calcite-dropdown-item>
+          </calcite-dropdown-group>
+          <calcite-dropdown-group id="choise_observatory"  group-title="Show Observatory" selection-mode="multi">
+          </calcite-dropdown-group>
+        </calcite-dropdown>
+      </div>
+      <label id="groupID"></label>
+    </div>
+    <div id="mainDiv">
+      <div id="body1Div" class="body-active">
+        <div id="timeslider_centermainDiv">
+          <div id="timeslider_leftDiv">
+            <span class="subtitle">Operation Supply Chain</span>
+            <div id="classificationChartDiv" class="chartStyle">
+              <canvas id="classificationChartCanvas"/>
+            </div>
+            <div>
+              <input type="checkbox" id="check_rate" name="check_rate">
+              <label for="check_rate">Display Rate</label>
+            </div>
+          </div>
+          <div id="timeslider_mapviewDiv"></div>
+          <div id="timeslider_rightDiv">
+            <div id="timeslider_InundationDepthDiv">
+              <span class="subtitle">Observatory inundation depth</span>
+              <ul id="inundation-depth-list">
+              </ul>
+              <div>No Data</div>
+            </div>
+            <div id="timeslider_SuspendedSupplyChainDiv">
+              <span class="subtitle">Suspended Supply Chain</span>
+              <ul id="supply-chain-list">
+              </ul>
+              <div>No Data</div>
+            </div>
+          </div>
+        </div>
+        <div id="timeslider_footerDiv">
+          <div id="timeSliderValue">4/1</div>
+          <div id="timeSliderDiv"></div>
+        </div>
+      </div>
+      <div id="body2Div" class="body-nonactive">
+        <div id="alltime_centermainDiv">
+          <div id="alltime_mapviewDiv"></div>
+          <div id="alltime_rightDiv">
+            <div id="alltime_InundationDepth">
+              <span class="subtitle">Inundation Depth Time Transition</span>
+              <canvas id="inundationDepthChartCanvas"/>
+            </div>
+            <div id="alltime_transitionDiv">
+              <span class="subtitle">Supply Chain Time Transition</span>
+              <ul id=timeSeriesChartTab class="tab-group">
+              </ul>
+              <div id="timeSeriesChartDiv" class="chartStyle">
+                <div id="timeSeriesChartPanel">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="disableDiv">This Apps Not available</div>
+  </body>
+</html>

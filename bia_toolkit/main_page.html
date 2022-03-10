@@ -1,0 +1,103 @@
+groupID<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Business Impact Analysis Main Menu</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/css/main.css" />
+    <link rel="stylesheet" type="text/css" href=https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.css />
+    <link rel="stylesheet" href="css/main_page.css" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script src="js/main_page.js"></script>
+    <script type="module" src=https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.esm.js></script>
+  </head>
+
+  <body>
+    <div id="titlePanel">
+      <span class="title">Business Impact Analysis Main Menu</span>
+      <label id="groupID"></label>
+      <button id="sign-in" class="sign-btn">Sign In</button>
+      <button id="sign-out" class="sign-btn hidden">Sign Out</button>
+    </div>
+    <div id="mainDisableDiv" hidden>
+      <calcite-loader active scale="l" type="indeterminate">
+      </calcite-loader>
+      <label id="runtingText" class="menu-title"></label>
+    </div>
+    <div id="mainDiv">
+      <table class="table-grid">
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid"></td>
+          <td class="td-menu-grid">
+            <div id="operatiingDiv" class="menu-panel">
+              <span class="menu-title">Operatiing Resources</span>
+              <img class="menu-image" src="https://taka-github1.github.io/nied/bus_risk.png"/>
+              <div class="btn-list">
+                <button id="bus-commuting-viewer" class="viewer normal-btn">Viewer</button>
+                <button id="staff-maintenance" class="manager normal-btn">Edit</button>
+                <button id="bus-analysis" class="manager analysis-btn" disabled>Analysis</button>
+              </div>
+            </div>
+          </td>
+          <td class="td-menu-grid"></td>
+        </tr>
+        <tr class="tr-arrow-grid">
+          <td class="td-arrow-grid"></td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-arrow-down esri-icon-color"/>
+          </td>
+          <td class="td-arrow-grid"></td>
+        </tr>
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid">
+            <div id="materialsDiv" class="menu-panel">
+              <span class="menu-title">Materials/Supply</span>
+              <img class="menu-image" src="https://taka-github1.github.io/nied/supply_chain_risk.png"/>
+              <div class="btn-list">
+                <button id="supply-viewer" class="viewer normal-btn">Viewer</button>
+                <button id="supply-maintenance" class="manager normal-btn">Edit</button>
+                <button id="supply-analysis" class="manager analysis-btn" disabled>Analysis</button>
+              </div>
+              <span id="supply-status" class="menu-status">　</span>
+            </div>
+          </td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-right-arrow esri-icon-color"/>
+          </td>
+          <td class="td-menu-grid">
+            <div id="valueAddingDiv" class="menu-panel">
+              <span class="menu-title">Value Adding Process</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-right-arrow esri-icon-color"/>
+          </td>
+          <td class="td-menu-grid">
+            <div id="productsDiv" class="menu-panel">
+              <span class="menu-title">Products/Servies</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="tr-arrow-grid">
+          <td class="td-arrow-grid"></td>
+          <td class="td-arrow-grid">
+              <div class="esri-icon-arrow-down esri-icon-color"/>
+          </td>
+          <td class="td-arrow-grid"></td>
+        </tr>
+        <tr class="tr-menu-grid">
+          <td class="td-menu-grid"></td>
+          <td class="td-menu-grid">
+            <div id="wasteDiv" class="menu-panel">
+              <span class="menu-title">Waste Produts</span>
+              <span class="menu-keepout">Under Consruction</span>
+            </div>
+          </td>
+          <td class="td-menu-grid"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
