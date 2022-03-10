@@ -1,0 +1,335 @@
+html,
+body{
+  background-color: black;
+  padding: 0;
+  margin: 0;
+  color: black;
+  width: 100%;
+  height: 100%;
+  color: white;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+#titlePanel {
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+}
+
+.title {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.title-image {
+  padding-left: 5px;
+  height: 90%;
+  width: auto;
+}
+
+#mainDiv {
+  width:100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: black;
+  color: white;
+}
+
+#disableDiv {
+  position: absolute;
+  align-items: center;
+  text-align: center;
+  padding-top: 30vh;
+  width: 100%;
+  font-size: 36px;
+}
+
+.setting_button {
+  margin: 0 0 0 auto;
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  width: 120px;
+}
+
+#headerDiv {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+
+#timeslider_centermainDiv {
+  height: 90%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#timeslider_leftDiv {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#timeslider_mapviewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 40%;
+}
+
+#timeslider_rightDiv {
+  padding: 0;
+  height: 100%;
+  width: 30%;
+}
+
+#timeslider_footerDiv {
+  padding: 0;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#absence-of-leaders-Div{
+  height: 50%;
+  overflow-y: auto;
+}
+
+#classificationChartDiv {
+  height: 50%;
+  width: 100%;
+}
+
+#timeslider_InundationDepthDiv {
+  height: 40%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inundation-depth-panel {
+  display: flex;
+  flex-direction: row;
+}
+
+.inundation-depth-image {
+  height: 30px;
+  width: auto;
+  padding: 5px;
+}
+
+#timeslider_SuspendedBusRoutesDiv {
+  height: 60%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartStyle {
+  display: -webkit-box;
+  display: block;
+  flex-wrap: wrap; 
+  -webkit-box-orient: vertical; 
+  -webkit-box-direction: normal; 
+  --flex-direction: column;
+  height: 100%;
+  width: 100%;
+  align-content: left;
+  padding: 0px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+#timeSliderValue {
+  min-height: 10%;
+  color: chocolate;
+  font-size: 24px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  min-width: 10%;
+  margin-bottom: 10px;
+}
+
+#timeSliderDiv {
+  height: auto;
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+/* esri overrides */
+.esri-time-slider__layout--wide .esri-time-slider__time-extent,
+.esri-time-slider__layout--compact .esri-time-slider__time-extent,
+.esri-time-slider__layout--wide .esri-time-slider__min,
+.esri-time-slider__layout--wide .esri-time-slider__max,
+.esri-time-slider__layout--compact .esri-time-slider__min-date,
+.esri-time-slider__layout--compact .esri-time-slider__max-date,
+.esri-legend__layer-caption {
+  display: none !important;
+}
+
+.body-active {
+  display: flex;
+  width: 100%;
+  height: 90%;
+  flex-direction: column;
+}
+
+.body-nonactive {
+  display: none;
+}
+
+.header_icon {
+  width: 40px;
+  height: 40px;
+}
+
+.title {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.menutitle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+  padding-left: 100px;
+  height: 100%;
+}
+
+ul {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+ul + div {
+  display: none;
+}
+
+ul:empty + div {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-left: 10px;
+  display: block;
+  font-size: 14px;
+}
+
+li {
+  list-style: none;
+  width: 90%;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 10px 10px 10px 10px;
+  border: 1px solid #CCC;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 9px;
+}
+
+.li_selected {
+  background-color: rgba(0, 0, 120, 0.8);
+}
+
+li:hover {
+  background-color: rgba(0, 0, 120, 0.5);
+}
+
+#alltime_centermainDiv {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#alltime_mapviewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 50%;
+  background-color: black;
+}
+
+#alltime_rightDiv {
+  padding: 0;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+alltime_InundationDepth {
+  padding: 0;
+  height: 40%;
+  width: 100%; 
+}
+
+#inundationDepthChartCanvas {
+  height: 100%;
+  max-height: 300px;
+}
+
+#alltime_transitionDiv {
+  padding: 0;
+  height: 60%;
+  width: 100%;
+}
+
+.tab-group{
+  display: flex;
+  justify-content: center;
+  height: auto;
+}
+
+.tab{
+  flex-grow: 1;
+  height: 20px;
+  padding:0px;
+  list-style:none;
+  /*border:solid 1px #CCC;*/
+  text-align:center;
+  cursor:pointer;
+}
+
+.tab.is-active{
+  background:#F00;
+  color:#FFF;
+  transition: all 0.2s ease-out;
+}
+
+.panel-group{
+  height:100%;
+}
+.panel{
+  display:none;
+}
+.panel.is-show{
+  display:block;
+}
