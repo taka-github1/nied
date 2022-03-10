@@ -28,7 +28,7 @@ require([
   }
   
   //configの読み込み
-  var json_url = "https://taka-github1.github.io/nied/bia_toolkit_settings.json";
+  var json_url = "bia_toolkit_settings.json";
   $.ajaxSetup({async: false});
   $.getJSON(json_url, function(json) {
     config = json;
