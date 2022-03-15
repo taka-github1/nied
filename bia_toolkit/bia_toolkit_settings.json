@@ -1,7 +1,7 @@
 {
   "application_id": "2Rr8gJDiy17TnVcT",
-  "pointAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PointAnalysis",
-  "polylineAnalysis_url": "https://ncc-svsm85.city.shima.mie.jp/arcgis_server/rest/services/ShinsuiAnalysis_v01/GPServer/PolylineAnalysis",
+  "pointAnalysis_url": "https://maps-dr.bosai.go.jp/webgis/rest/services/BIA_Toolkit/ShinsuiAnalysis_v01/GPServer/PointAnalysis",
+  "polylineAnalysis_url": "https://maps-dr.bosai.go.jp/webgis/rest/services/BIA_Toolkit/ShinsuiAnalysis_v01/GPServer/PolylineAnalysis",
   "operatiing_viewer_url": "operatiing_viewer.html",
   "operatiing_edit_url": "staff_maintenance.html",
   "materials_viewer_url": "materials_viewer.html",
