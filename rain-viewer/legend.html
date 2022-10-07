@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>凡例</title>
+    <style>
+
+      /* 凡例 */
+      table {
+        border-collapse: separate;
+        border-spacing: 10px;
+      }
+      .legend-text {
+        font-size: 12px;
+      }
+      .legend-color {
+        height: 20px;
+        width: 20px;
+        float: left;
+        border: 1px solid;
+      }
+      .legend_head {
+        position:relative;
+        font-size: 14px;
+        margin-top:3px;
+        border-bottom: solid 1px #333;
+        z-index: 101;
+      }
+      .legend_desc {
+        position:relative;
+        font-size: 12px;
+        margin-top:3px;
+        border-top: dotted 1px #333;
+        padding:6px 0 0;
+        z-index: 101;
+      }
+      .rain_legend1 {
+        background-color: #B80064;
+      }
+      .rain_legend2 {
+        background-color: #FF2800;
+      }
+      .rain_legend3 {
+        background-color: #FF9900;
+      }
+      .rain_legend4 {
+        background-color: #FAF500;
+      }
+      .rain_legend5 {
+        background-color: #0041FF;
+      }
+      .rain_legend6 {
+        background-color: #218CFF;
+      }
+      .rain_legend7 {
+        background-color: #A0D2FF;
+      }
+      .rain_legend8 {
+        background-color: #FFFFFF;
+      }
+
+      .flood_legend1 {
+        background-color: #601d7f;
+      }
+      .flood_legend2 {
+        background-color: #ff2200;
+      }
+      .flood_legend3 {
+        background-color: #ff9900;
+      }
+      .flood_legend4 {
+        background-color: #ffff00;
+      }
+      
+      .shinsui_legend1 {
+        background-color: #CC3131;
+      }
+      .shinsui_legend2 {
+        background-color: #4CAE96;
+      }
+
+      .ER_legend1 {
+        background-color: #601d7f;
+      }
+      .ER_legend2 {
+        background-color: #ff2200;
+      }
+      .ER_legend3 {
+        background-color: #ff9900;
+      }
+      .ER_legend4 {
+        background-color: #ffff00;
+      }
+
+      .R24H_legend1 {
+        background-color: #0000ff;
+      }
+      .R24H_legend2 {
+        background-color: #7878ff;
+      }
+      .R24H_legend3 {
+        background-color: #c8c8ff;
+      }
+      .R24H_legend4 {
+        background-color: #FFFFFF;
+      }
+
+      /*
+      @media screen and (max-width: 350px) {
+        .legend-text {
+          font-size: 8px;
+        }
+        .legend_desc {
+          font-size: 8px;
+        }
+        table {
+          border-spacing: 5px;
+        }
+      }
+      */
+      
+    </style>
+  </head>
+  <body>
+    <div class="legendDiv_rain" style="display: none;">
+      <div class="legend_head">
+        <p>1時間降水量（mm/h）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color rain_legend1">&nbsp;</td>
+          <td class="legend-text">80 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend2">&nbsp;</td>
+          <td class="legend-text">50 - 80</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend3">&nbsp;</td>
+          <td class="legend-text">30 - 50</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend4">&nbsp;</td>
+          <td class="legend-text">20 - 30</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend5">&nbsp;</td>
+          <td class="legend-text">10 - 20</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend6">&nbsp;</td>
+          <td class="legend-text">5 - 10</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend7">&nbsp;</td>
+          <td class="legend-text">1 - 5</td>
+        </tr>
+        <tr>
+          <td class="legend-color rain_legend8">&nbsp;</td>
+          <td class="legend-text">0 - 1</td>
+        </tr>
+      </table>
+      <!--
+      <div class="legend_desc">
+        <p>単位:mm/h</p>
+      </div>
+      -->
+    </div>
+    <div class="legendDiv_flood" style="display: none;">
+      <div class="legend_head">
+        <p>浸水深（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color flood_legend1">&nbsp;</td>
+          <td class="legend-text">2 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color flood_legend2">&nbsp;</td>
+          <td class="legend-text">1 - 2</td>
+        </tr>
+        <tr>
+          <td class="legend-color flood_legend3">&nbsp;</td>
+          <td class="legend-text">0.5 - 1</td>
+        </tr>
+        <tr>
+          <td class="legend-color flood_legend4">&nbsp;</td>
+          <td class="legend-text">- 0.5</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_Road" style="display: none;">
+      <div class="legend_head">
+        <p>道路の浸水</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color shinsui_legend1">&nbsp;</td>
+          <td class="legend-text">浸水あり</td>
+        </tr>
+        <tr>
+          <td class="legend-color shinsui_legend2">&nbsp;</td>
+          <td class="legend-text">浸水なし</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_Tatemono" style="display: none;">
+      <div class="legend_head">
+        <p>建物の浸水</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color shinsui_legend1">&nbsp;</td>
+          <td class="legend-text">浸水あり</td>
+        </tr>
+        <tr>
+          <td class="legend-color shinsui_legend2">&nbsp;</td>
+          <td class="legend-text">浸水なし</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_R24H" style="display: none;">
+      <div class="legend_head">
+        <p>24時間雨量（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color R24H_legend1">&nbsp;</td>
+          <td class="legend-text">200 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend2">&nbsp;</td>
+          <td class="legend-text">100 - 200</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend3">&nbsp;</td>
+          <td class="legend-text">50 - 100</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend4">&nbsp;</td>
+          <td class="legend-text">- 50</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_R48H" style="display: none;">
+      <div class="legend_head">
+        <p>48時間雨量（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color R24H_legend1">&nbsp;</td>
+          <td class="legend-text">400 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend2">&nbsp;</td>
+          <td class="legend-text">200 - 400</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend3">&nbsp;</td>
+          <td class="legend-text">100 - 200</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend4">&nbsp;</td>
+          <td class="legend-text">- 100</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_R72H" style="display: none;">
+      <div class="legend_head">
+        <p>72時間雨量（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color R24H_legend1">&nbsp;</td>
+          <td class="legend-text">600 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend2">&nbsp;</td>
+          <td class="legend-text">300 - 600</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend3">&nbsp;</td>
+          <td class="legend-text">150 - 300</td>
+        </tr>
+        <tr>
+          <td class="legend-color R24H_legend4">&nbsp;</td>
+          <td class="legend-text">- 150</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_ER90M" style="display: none;">
+      <div class="legend_head">
+        <p>1.5時間実効雨量（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color ER_legend1">&nbsp;</td>
+          <td class="legend-text">40 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend2">&nbsp;</td>
+          <td class="legend-text">30 - 40</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend3">&nbsp;</td>
+          <td class="legend-text">20 - 30</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend4">&nbsp;</td>
+          <td class="legend-text">10 - 20</td>
+        </tr>
+      </table>
+    </div>
+    <div class="legendDiv_ER72H" style="display: none;">
+      <div class="legend_head">
+        <p>72時間実効雨量（m）</p>
+      </div>
+      <table>
+        <tr>
+          <td class="legend-color ER_legend1">&nbsp;</td>
+          <td class="legend-text">400 -</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend2">&nbsp;</td>
+          <td class="legend-text">300 - 400</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend3">&nbsp;</td>
+          <td class="legend-text">200 - 300</td>
+        </tr>
+        <tr>
+          <td class="legend-color ER_legend4">&nbsp;</td>
+          <td class="legend-text">100 - 200</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
