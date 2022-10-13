@@ -1,134 +1,164 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
-    <title>降雨シナリオ</title>
 
-    <script type="module" src="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.esm.js"></script>
-    <script nomodule="" src="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.css" />
-    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
-    <script src="https://js.arcgis.com/4.24/"></script>
-    <script src="app/rain.js"></script>
-    <style>
-      html,
-      body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #titleDiv {
-        font-size: 16px;
-        padding: 10px;
-        width: 300px;
-      }
-      #headerDiv {
-        font-size: 18px;
-      }
-      #appTitle {
-        position: absolute;
-        left: 80px;
-        top: 30px;
-      }
-      #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-      #linkButton {
-        right: 100px;
-      }
-      #headerModal {
-        width: 100%;
-        height: 100%;
-      }
-      .headerTitleDiv {
-        position: absolute;
-        left: 0;
-        top: 0;
-      }
-      .headerDescriptionDiv {
-        position: absolute;
-        font-size: 18px;
-        color: red;
-        left: 280px;
-        top: 25px;
-      }
-      .headerLogoImg {
-        width: 61px;
-        height: 75px;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>降雨シナリオ</title>
 
-      .selectDiv {
-        padding: 5px;
-      }
+  <script type="module" src="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.esm.js"></script>
+  <script nomodule="" src="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.0.0-beta.76/calcite.css" />
+  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <script src="https://js.arcgis.com/4.24/"></script>
+  <script src="app/rain.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-      /* 凡例 */
-      #legendModalButton {
-        display: none;
-      }
-      table {
-        border-collapse: separate;
-        border-spacing: 10px;
-      }
-      .legend-text {
-        font-size: 14px;
-      }
-      .legend-color {
-        height: 20px;
-        width: 20px;
-        float: left;
-      }
-      .legend_desc {
-        position:relative;
-        font-size: 14px;
-        margin-top:3px;
-        border-top: dotted 1px #333;
-        padding:6px 0 0;
-        z-index: 101;
+    #titleDiv {
+      font-size: 16px;
+      padding: 10px;
+      width: 300px;
+    }
 
-      }
+    #headerDiv {
+      font-size: 18px;
+    }
 
-      #infoDiv {
-        width: 200px;
-        height: 390px;
-        padding: 10px;
-        background: rgba(255,255,255,1);
-      }
-      .esri-view-width-xsmall .esri-ui-top-right .esri-expand--auto .esri-expand__container--expanded, .esri-view-width-xsmall .esri-ui-bottom-right .esri-expand--auto .esri-expand__container--expanded {
-        height: 550px;
-        width: 450px;
-      }
+    #appTitle {
+      position: absolute;
+      left: 80px;
+      top: 30px;
+    }
 
-      #timeSlider {
-        position: absolute;
-        left: 2%;
-        right: 2%;
-        bottom: 20px;
-      }
-      .esri-time-slider__play,
-      .esri-time-slider__previous,
-      .esri-time-slider__next {
-        height: 100% !important;
-      }
-      /* タイムスライダーのライン：左側を青、右側をグレーにする */
-      .esri-time-slider__mode--instant .esri-slider__segment-0 {
-        background-color: #0079c1;
-        height: 6px;
-        margin-top: -1px;
-      }
-      .esri-time-slider__mode--instant .esri-slider__segment-1 {
-        background-color: rgba(110,110,110,.4);
-        height: 6px;
-        margin-top: -1px;
-      }
-      /* タイムスライダーのライン：オリジナル
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #linkButton {
+      right: 100px;
+    }
+
+    #headerModal {
+      width: 100%;
+      height: 100%;
+    }
+
+    .headerTitleDiv {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .headerDescriptionDiv {
+      position: absolute;
+      font-size: 18px;
+      color: red;
+      left: 280px;
+      top: 25px;
+    }
+
+    .headerLogoImg {
+      width: 61px;
+      height: 75px;
+    }
+
+    .selectDiv {
+      padding: 5px;
+    }
+
+    /* 凡例 */
+    #legendModalButton {
+      display: none;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 10px;
+    }
+
+    .legend-text {
+      font-size: 14px;
+    }
+
+    .legend-color {
+      height: 20px;
+      width: 20px;
+      float: left;
+    }
+
+    .legend_desc {
+      position: relative;
+      font-size: 14px;
+      margin-top: 3px;
+      border-top: dotted 1px #333;
+      padding: 6px 0 0;
+      z-index: 101;
+
+    }
+
+    #infoDiv {
+      width: 200px;
+      height: 390px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .esri-view-width-xsmall .esri-ui-top-right .esri-expand--auto .esri-expand__container--expanded,
+    .esri-view-width-xsmall .esri-ui-bottom-right .esri-expand--auto .esri-expand__container--expanded {
+      height: 550px;
+      width: 450px;
+    }
+
+    #graphDiv {
+      width: 300px;
+      height: 290px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 1);
+    }
+
+    #graphCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #timeSlider {
+      position: absolute;
+      left: 2%;
+      right: 2%;
+      bottom: 20px;
+    }
+
+    .esri-time-slider__play,
+    .esri-time-slider__previous,
+    .esri-time-slider__next {
+      height: 100% !important;
+    }
+
+    /* タイムスライダーのライン：左側を青、右側をグレーにする */
+    .esri-time-slider__mode--instant .esri-slider__segment-0 {
+      background-color: #0079c1;
+      height: 6px;
+      margin-top: -1px;
+    }
+
+    .esri-time-slider__mode--instant .esri-slider__segment-1 {
+      background-color: rgba(110, 110, 110, .4);
+      height: 6px;
+      margin-top: -1px;
+    }
+
+    /* タイムスライダーのライン：オリジナル
       .esri-time-slider__mode--time-window .esri-slider__segment-0, .esri-time-slider__mode--time-window .esri-slider__segment-2 {
         background-color: rgba(110,110,110,.4);
       }
@@ -138,204 +168,226 @@
         margin-top: -1px;
       }
       */
-      #timesliderDiv {
-        width: 100%;
+    #timesliderDiv {
+      width: 100%;
+    }
+
+    #timeslider_box {
+      display: none;
+      position: absolute;
+      padding-bottom: 20px;
+      padding-top: 15px;
+      left: 20px;
+      right: 20px;
+      z-index: 99;
+      bottom: 0px;
+    }
+
+    /*ボタン装飾*/
+    #timeslider_box label {
+      position: absolute;
+      right: 0px;
+      top: -26px;
+      padding: 7px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: .5s;
+    }
+
+    /*アイコンを表示*/
+    #timeslider_box label:before {
+      display: inline-block;
+      content: '\e637';
+      font-size: 24px;
+      font-family: 'CalciteWebCoreIcons';
+      padding-left: 5px;
+      padding-right: 5px;
+      transition: 0.2s;
+    }
+
+    /*ボタンホバー時*/
+    #timeslider_box label:hover {
+      background: silver;
+    }
+
+    /*アイコンを切り替え*/
+    #timeslider_box input:checked+label:before {
+      content: '\e638';
+      font-size: 24px;
+      font-family: 'CalciteWebCoreIcons';
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+
+    /*チェックは見えなくする*/
+    #timeslider_box input {
+      display: none;
+    }
+
+    /*中身を非表示にしておく*/
+    #timeslider_box .hidden_show {
+      height: 0;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: 0.8s;
+    }
+
+    /*クリックで中身表示*/
+    #timeslider_box input:checked+label+.hidden_show {
+      /*padding: 10px 0;*/
+      height: auto;
+      opacity: 1;
+    }
+
+    #timeView {
+      display: block;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      z-index: 98;
+      height: 21px;
+      width: 190px;
+      background-color: #ffffff;
+      padding: 10px;
+    }
+
+    .esri-popup__footer {
+      display: none;
+    }
+
+    .esri-popup__main-container {
+      width: 260px !important;
+    }
+
+    @media screen and (max-width: 1400px) {
+      .headerDescriptionDiv {
+        position: absolute;
+        font-size: 18px;
+        left: 60px;
+        right: 40px;
+        top: 140px;
+        z-index: 101;
       }
+    }
+
+    @media screen and (max-width: 768px) {
+      .headerLogoImg {
+        width: 28px;
+        height: 35px;
+      }
+
       #timeslider_box {
-        display: none;
-        position: absolute;
-        padding-bottom: 20px;
-        padding-top: 15px;
-        left: 20px;
-        right: 20px;
-        z-index: 99;
-        bottom: 0px;
+        padding: 0px 0px 20px 0px;
+        left: 0;
+        right: 0;
       }
-      /*ボタン装飾*/
+
       #timeslider_box label {
-        position: absolute;
         right: 0px;
-        top: -26px;
-        padding: 7px;
-        background: #ffffff;
-        cursor: pointer;
-        transition: .5s;
+        top: -41px;
       }
-      /*アイコンを表示*/
-      #timeslider_box label:before {
-        display: inline-block;
-        content: '\e637';
-        font-size: 24px;
-        font-family: 'CalciteWebCoreIcons';
-        padding-left: 5px;
-        padding-right: 5px;
-        transition: 0.2s;
-      }
-      /*ボタンホバー時*/
-      #timeslider_box label:hover {
-        background: silver;
-      }
-      /*アイコンを切り替え*/
-      #timeslider_box input:checked+label:before {
-        content: '\e638';
-        font-size: 24px;
-        font-family: 'CalciteWebCoreIcons';
-        -ms-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-      /*チェックは見えなくする*/
-      #timeslider_box input {
-        display: none;
-      }
-      /*中身を非表示にしておく*/
-      #timeslider_box .hidden_show {
-        height: 0;
-        padding: 0;
-        overflow: hidden;
-        opacity: 0;
-        transition: 0.8s;
-      }
-      /*クリックで中身表示*/
-      #timeslider_box input:checked+label+.hidden_show {
-        /*padding: 10px 0;*/
-        height: auto;
-        opacity: 1;
-      }
+
       #timeView {
-        display: block;
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-        z-index: 98;
-        height: 21px;
-        width: 190px;
-        background-color: #ffffff;
-        padding: 10px;
+        right: 0px;
       }
 
-      .esri-popup__footer {
-	      display: none;
+      #timeSlider {
+        left: 0;
+        right: 0;
       }
+
+      .esri-time-slider__slider {
+        background-color: #f3f3f3;
+        padding: 0 40px 0 20px;
+      }
+
+      h2.esri-widget__heading {
+        font-size: 12px;
+      }
+
       .esri-popup__main-container {
-        width: 260px !important;
+        width: 200px !important;
       }
 
-      @media screen and (max-width: 1400px) {
-        .headerDescriptionDiv {
-          position: absolute;
-          font-size: 18px;
-          left: 60px;
-          right: 40px;
-          top: 140px;
-          z-index: 101;
-        }
+      .legend-text {
+        font-size: 12px;
       }
-      @media screen and (max-width: 768px) {
-        .headerLogoImg {
-          width: 28px;
-          height: 35px;
-        }
 
-        #timeslider_box {
-          padding: 0px 0px 20px 0px;
-          left: 0;
-          right: 0;
-        }
-        #timeslider_box label {
-          right: 0px;
-          top: -41px;
-        }
-        #timeView {
-          right: 0px;
-        }
-
-        #timeSlider {
-          left: 0;
-          right: 0;
-        }
-        .esri-time-slider__slider {
-          background-color: #f3f3f3;
-          padding: 0 40px 0 20px;
-        }
-
-        h2.esri-widget__heading {
-          font-size: 12px;
-        }
-        .esri-popup__main-container {
-          width: 200px !important;
-        }
-
-        .legend-text {
-          font-size: 12px;
-        }
-        .legend_desc {
-          font-size: 12px;
-        }
-        table {
-          border-spacing: 10px;
-        }
-        
+      .legend_desc {
+        font-size: 12px;
       }
-      
-    </style>
-  </head>
-  <body>
-    <div id="viewDiv">
-      <div id="titleDiv" class="esri-widget">
-        <div id="headerDiv">
-          <div><a href="https://www.bosai.go.jp" target="_blank"><img class="headerLogoImg" src="resources/images/logo.jpg"></a></div>
-          <div id="appTitle">降雨シナリオビューア</div>
-        </div>
-        <div class="selectDiv">
-          <select id="scenarioSelect" class="esri-input esri-select">
-            <option value="" selected>シナリオを選択してください。</option>
-          </select>
-        </div>
-        <div class="selectDiv">
-          <select id="themeSelect" class="esri-input esri-select">
-            <option value="" selected>テーマを選択してください。</option>
-          </select>
-        </div>
-        <div class="selectDiv">
-          <select id="layerSelect" class="esri-input esri-select">
-            <option value="" selected>レイヤーを選択してください。</option>
-          </select>
-        </div>
-  
+
+      table {
+        border-spacing: 10px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewDiv">
+    <div id="titleDiv" class="esri-widget">
+      <div id="headerDiv">
+        <div><a href="https://www.bosai.go.jp" target="_blank"><img class="headerLogoImg"
+              src="resources/images/logo.jpg"></a></div>
+        <div id="appTitle">降雨シナリオビューア</div>
       </div>
-    </div>
-    <div id="infoDiv" class="esri-widget">
-      <iframe id="legendFrame" src="legend.html" frameborder="0" style="height: 100%; width: 100%;"></iframe>
-    </div>
-    <calcite-button id="legendModalButton" appearance="outline" color="inverse" icon-start="information"></calcite-button>
-    <calcite-modal id="legendModal" aria-labelledby="modal-title">
-      <div slot="content" style="height: 100%; width: 100%;">
-        <iframe src="legend.html" frameborder="0" style="height: 100%; width: 100%;"></iframe>
+      <div class="selectDiv">
+        <select id="scenarioSelect" class="esri-input esri-select">
+          <option value="" selected>シナリオを選択してください。</option>
+        </select>
       </div>
-      <calcite-button id="closeLegendModalButton" slot="primary" width="full">閉じる</calcite-button>
-    </calcite-modal>
-    <div id="timeslider_box">
-      <input type="checkbox" id="label1" checked/>
-      <label for="label1"></label>
-      <div class="hidden_show">
-        <div id="timesliderDiv"></div>
+      <div class="selectDiv">
+        <select id="themeSelect" class="esri-input esri-select">
+          <option value="" selected>テーマを選択してください。</option>
+        </select>
       </div>
+      <div class="selectDiv">
+        <select id="layerSelect" class="esri-input esri-select">
+          <option value="" selected>レイヤーを選択してください。</option>
+        </select>
+      </div>
+
     </div>
-    <div id="timeView"></div>
-    <calcite-radio-group id="layerRadioGroup">
-      <calcite-radio-group-item value="0" checked>現況</calcite-radio-group-item>
-      <calcite-radio-group-item value="10">10分後</calcite-radio-group-item>
-      <calcite-radio-group-item value="20">20分後</calcite-radio-group-item>
-      <calcite-radio-group-item value="30">30分後</calcite-radio-group-item>
-      <calcite-radio-group-item value="40">40分後</calcite-radio-group-item>
-      <calcite-radio-group-item value="50">50分後</calcite-radio-group-item>
-      <calcite-radio-group-item value="60">1時間後</calcite-radio-group-item>
-      <calcite-radio-group-item value="120">2時間後</calcite-radio-group-item>
-      <calcite-radio-group-item value="180">3時間後</calcite-radio-group-item>
-      <calcite-radio-group-item value="240">4時間後</calcite-radio-group-item>
-      <calcite-radio-group-item value="300">5時間後</calcite-radio-group-item>
-      <calcite-radio-group-item value="360">6時間後</calcite-radio-group-item>
-    </calcite-radio-group>
-  </body>
+  </div>
+  <div id="infoDiv" class="esri-widget">
+    <iframe id="legendFrame" src="legend.html" frameborder="0" style="height: 100%; width: 100%;"></iframe>
+  </div>
+  <calcite-button id="legendModalButton" appearance="outline" color="inverse" icon-start="information"></calcite-button>
+  <calcite-modal id="legendModal" aria-labelledby="modal-title">
+    <div slot="content" style="height: 100%; width: 100%;">
+      <iframe src="legend.html" frameborder="0" style="height: 100%; width: 100%;"></iframe>
+    </div>
+    <calcite-button id="closeLegendModalButton" slot="primary" width="full">閉じる</calcite-button>
+  </calcite-modal>
+  <div id="graphDiv" class="esri-widget">
+    <canvas id="graphCanvas"></canvas>
+  </div>
+  <div id="timeslider_box">
+    <input type="checkbox" id="label1" checked />
+    <label for="label1"></label>
+    <div class="hidden_show">
+      <div id="timesliderDiv"></div>
+    </div>
+  </div>
+  <div id="timeView"></div>
+  <calcite-radio-group id="layerRadioGroup">
+    <calcite-radio-group-item value="0" checked>現況</calcite-radio-group-item>
+    <calcite-radio-group-item value="10">10分後</calcite-radio-group-item>
+    <calcite-radio-group-item value="20">20分後</calcite-radio-group-item>
+    <calcite-radio-group-item value="30">30分後</calcite-radio-group-item>
+    <calcite-radio-group-item value="40">40分後</calcite-radio-group-item>
+    <calcite-radio-group-item value="50">50分後</calcite-radio-group-item>
+    <calcite-radio-group-item value="60">1時間後</calcite-radio-group-item>
+    <calcite-radio-group-item value="120">2時間後</calcite-radio-group-item>
+    <calcite-radio-group-item value="180">3時間後</calcite-radio-group-item>
+    <calcite-radio-group-item value="240">4時間後</calcite-radio-group-item>
+    <calcite-radio-group-item value="300">5時間後</calcite-radio-group-item>
+    <calcite-radio-group-item value="360">6時間後</calcite-radio-group-item>
+  </calcite-radio-group>
+</body>
+
 </html>
