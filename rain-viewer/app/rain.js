@@ -6,6 +6,7 @@ require([
   "esri/layers/MapImageLayer",
   "esri/layers/WebTileLayer",
   "esri/rest/support/ImageIdentifyParameters",
+  "esri/layers/FeatureLayer",
   "esri/widgets/Expand",
   "esri/widgets/TimeSlider",
   "esri/request",
@@ -18,6 +19,7 @@ require([
   MapImageLayer,
   WebTileLayer,
   ImageIdentifyParameters,
+  FeatureLayer,
   Expand,
   TimeSlider,
   esriRequest,
@@ -39,6 +41,37 @@ require([
     ["R72H", "72時間降水量", "mm"],
     ["ER90M", "1.5時間実効雨量", "mm"],
     ["ER72H", "72時間実効雨量", "mm"]
+  ];
+
+  const graphInfos = [
+    {
+      "id": "0",
+      "type": "horizontalLineChart",
+      "scenario": "人吉市令和2年7月豪雨",
+      "theme": "浸水害",
+      "layer": "浸水建物",
+      "chartLabel": "件数",
+      "StatisticsFields": [
+        {
+          "title": "0.5m浸水建物件数",
+          "layerId": "0",
+          "queryField": "日時",
+          "graphColor": "yellow",
+        },
+        {
+          "title": "建物件数",
+          "layerId": "1",
+          "queryField": "",
+          "graphColor": "black",
+        },
+        // {
+        //   "title": "3m浸水建物件数",
+        //   "layerId": "1",
+        //   "field": "ObjectId",
+        //   "type": "count"
+        // }
+      ]
+    }
   ];
   let popupTitle = "";
   let popupUnit = "";
@@ -92,16 +125,21 @@ require([
   const scenarioSelect = document.getElementById("scenarioSelect");
   const themeSelect = document.getElementById("themeSelect");
   const layerSelect = document.getElementById("layerSelect");
+
+
+  let selectedGraphInfo = {};
+  let graphInstance = null;
+
   let timeEnabledLayerList = [];
   let timeEnabledLayerObjList = [];
   esriRequest(rainRestURL, rainRestOptions).then(function (response) {
     timeEnabledLayerList = response.data.services.map(rainServce => {
-      if(rainServce.type == "ImageServer" || rainServce.type == "MapServer"){
+      if (rainServce.type == "ImageServer" || rainServce.type == "MapServer") {
         return setServiceOption(rainServce);
       }
     });
-    all(timeEnabledLayerList).then(function(results) {
-      results.forEach(function( timeEnabledLayer ) {
+    all(timeEnabledLayerList).then(function (results) {
+      results.forEach(function (timeEnabledLayer) {
         //console.log("timeEnabledLayer:", timeEnabledLayer);
         let serviceNames = timeEnabledLayer.serviceDescription.split("_");
         let serviceUrl = timeEnabledLayer.url;
@@ -111,17 +149,17 @@ require([
           let theme = scenario.data.find(value => value.name === serviceNames[1]);
           if (theme) {
             //console.log("theme.data");
-            theme.data.push({name: serviceNames[2], url: serviceUrl});
+            theme.data.push({ name: serviceNames[2], url: serviceUrl });
           } else {
             //console.log("テーマなし");
-            scenario.data.push({name: serviceNames[1], data: [{name: serviceNames[2], url: serviceUrl}]});
+            scenario.data.push({ name: serviceNames[1], data: [{ name: serviceNames[2], url: serviceUrl }] });
           }
-  
+
         } else {
           //console.log("シナリオなし");
-          timeEnabledLayerObjList.push({name: serviceNames[0], data: [{name: serviceNames[1], data: [{name: serviceNames[2], url: serviceUrl}]}]});
+          timeEnabledLayerObjList.push({ name: serviceNames[0], data: [{ name: serviceNames[1], data: [{ name: serviceNames[2], url: serviceUrl }] }] });
         }
-  
+
       });
       timeEnabledLayerObjList.map(scenario => {
         const scenarioOption = document.createElement("option");
@@ -130,12 +168,12 @@ require([
         scenarioSelect.appendChild(scenarioOption);
         //console.log(scenarioOption);
       });
-  
+
     });
   });
-  function setServiceOption(service){
+  function setServiceOption(service) {
     return esriRequest(baseRestURL + service.name + "/" + service.type, rainRestOptions).then(function (response) {
-      return {serviceDescription: response.data.serviceDescription, url: baseRestURL + service.name + "/" + service.type};
+      return { serviceDescription: response.data.serviceDescription, url: baseRestURL + service.name + "/" + service.type };
     });
   }
 
@@ -153,7 +191,7 @@ require([
   scenarioSelect.addEventListener("change", () => {
     //console.log("scenarioSelect.value:", scenarioSelect.value);
     zoom2layer = true;
-    if(!scenarioSelect.value) {
+    if (!scenarioSelect.value) {
       return;
     }
     removeOptions(themeSelect);
@@ -183,6 +221,35 @@ require([
       layerOption.value = layer.url;
       layerSelect.appendChild(layerOption);
     });
+
+    //前回のグラフレイヤーを削除
+    const oldGraphLayers = map.layers.find(layer => layer.title.startsWith("graph_"));
+
+    if (oldGraphLayers && oldGraphLayers.length > 0) {
+      oldGraphLayers.forEach(function (layer) {
+        map.remove(layer);
+      });
+    }
+
+    //グラフ集計の情報を取得
+    selectedGraphInfo = graphInfos.find(info => (info.scenario === selectedScenario.name && info.theme === selectedTheme.name));
+
+    if (selectedGraphInfo && selectedGraphInfo.layer) {
+      const layerInfo = selectedTheme.data.find(data => (data.name === selectedGraphInfo.layer));
+      if (layerInfo && layerInfo.url) {
+        selectedGraphInfo["url"] = layerInfo.url;
+        selectedGraphInfo.StatisticsFields.forEach(function (statisticsField) {
+          statisticsField["url"] = selectedGraphInfo["url"] + "/" + statisticsField.layerId;
+          statisticsField["layer"] = new FeatureLayer({
+            title: `graph_${statisticsField.title}`,
+            url: statisticsField["url"]
+          });
+        });
+      }
+    }
+    if (timeSlider.timeExtent) {
+      graphRedraw(timeSlider.timeExtent.start);
+    }
   });
   layerSelect.addEventListener("change", () => {
     document.getElementById("viewDiv").style.cursor = "wait";
@@ -199,7 +266,7 @@ require([
         opacity: 0.6,
         definitionExpression: "after_time = " + afterTime,
         visible: true
-      });  
+      });
     } else if (layerSelect.value.includes("ImageServer")) {
       timeEnabledLayer = new ImageryLayer({
         id: "timeEnabledLayer",
@@ -216,17 +283,17 @@ require([
       if (zoom2layer) {
         zoom2layer = false;
         view.goTo({
-          target:timeEnabledLayer.fullExtent
-        },{
+          target: timeEnabledLayer.fullExtent
+        }, {
           duration: 1000
         });
       }
       timeSlider.fullTimeExtent = timeEnabledLayer.timeInfo.fullTimeExtent;
       if (timeSlider.timeExtent) {
         if (timeSlider.timeExtent.start < timeSlider.fullTimeExtent.start) {
-          timeSlider.timeExtent = {start: timeSlider.fullTimeExtent.start, end: timeSlider.fullTimeExtent.start};
+          timeSlider.timeExtent = { start: timeSlider.fullTimeExtent.start, end: timeSlider.fullTimeExtent.start };
         } else if (timeSlider.timeExtent.start > timeSlider.fullTimeExtent.end) {
-          timeSlider.timeExtent = {start: timeSlider.fullTimeExtent.end, end: timeSlider.fullTimeExtent.end};
+          timeSlider.timeExtent = { start: timeSlider.fullTimeExtent.end, end: timeSlider.fullTimeExtent.end };
         }
       }
       timeSlider.stops = {
@@ -239,14 +306,17 @@ require([
         if (view.popup.visible) {
           identify4popup(clickedMapPoint);
         }
+
+        //グラフ表示の更新
+        graphRedraw(timeExtent.start);
       });
       if (view.popup.visible) {
         identify4popup(clickedMapPoint);
-      }  
+      }
       //凡例の更新
       legendList.forEach(legend => {
         let legendLayerName = "";
-        if(timeEnabledLayer.rasterFunctionInfos){
+        if (timeEnabledLayer.rasterFunctionInfos) {
           legendLayerName = timeEnabledLayer.rasterFunctionInfos[0].name;
         } else {
           legendLayerName = timeEnabledLayer.title;
@@ -273,7 +343,7 @@ require([
     }
   }
 
-  view.when(function(){
+  view.when(function () {
     if (view.widthBreakpoint === "xsmall") {
       legendExpand.visible = false;
       document.getElementById("legendModalButton").style.display = "block";
@@ -307,12 +377,12 @@ require([
       let imageIdentifyParams = new ImageIdentifyParameters();
       imageIdentifyParams.geometry = mapPoint;
       imageIdentifyParams.timeExtent = timeSlider.timeExtent;
-      imageIdentifyParams.mosaicRule = {where: "after_time = " + afterTime};
+      imageIdentifyParams.mosaicRule = { where: "after_time = " + afterTime };
       imageIdentifyParams.renderingRule = {}; //response.valueがRGB("236, 236, 138")となるのを回避するため
       const popup = view.popup;
       if (timeEnabledLayer && timeEnabledLayer.visible) {
         timeEnabledLayer.identify(imageIdentifyParams).then(function (response) {
-          if(response.value != "NoData") {
+          if (response.value != "NoData") {
             popup.open({
               title: popupTitle + "：" + Math.round(response.value * 10) / 10 + popupUnit
             });
@@ -324,6 +394,103 @@ require([
     }
     if (timeEnabledLayer.type === "map-image") {
       //MapImageLayerの場合のポップアップ設定は未実装
+    }
+  }
+
+  //グラフの再描画処理
+  async function graphRedraw(lastTime) {
+
+    if (graphInstance) {
+      graphInstance.destroy();
+    }
+
+    const graphCanvas = document.getElementById("graphCanvas");
+
+    if (selectedGraphInfo) {
+      graphExpand.expanded = true;
+      // graphExpand.visible = true;
+
+      for (const statisticsField of selectedGraphInfo.StatisticsFields) {
+        statisticsField["count"] = 0;
+        const query = statisticsField.layer.createQuery();
+        if (statisticsField["queryField"] === "") {
+          query.where = "1=1";
+        } else {
+          query.where = `${statisticsField["queryField"]} <= TIMESTAMP '${formatDate(lastTime, "yyyy/MM/dd HH:mm:ss")}'`;
+        }
+        const count = await statisticsField.layer.queryFeatureCount(query);
+        statisticsField["count"] = count;
+      }
+
+      var ctx = graphCanvas.getContext('2d');
+
+      const labels = selectedGraphInfo.StatisticsFields.map(field => {
+        return field.title;
+      });
+      const datas = selectedGraphInfo.StatisticsFields.map(field => {
+        return field.count;
+      });
+
+      const colors = selectedGraphInfo.StatisticsFields.map(field => {
+        return field.graphColor;
+      });
+
+      graphInstance = new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: selectedGraphInfo.chartLabel,
+            data: datas,
+            backgroundColor: colors
+          }],
+        },
+        options: {
+          title: {
+            display: false
+          },
+          animation: false,
+          layout: {
+            padding: {
+              left: 0,
+              right: 20,
+              top: 20,
+              bottom: 0
+            }
+          },
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [
+              {
+                ticks: {
+                  min: 0
+                }
+              }
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  reverse: true
+                }
+              }
+            ]
+          },
+          tooltips: {
+            enabled: true,
+            mode: 'index'
+          },
+          hover: {
+            animationDuration: 0
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    } else {
+      graphExpand.expanded = false;
+      // graphExpand.visible = false;
     }
   }
 
@@ -339,7 +506,17 @@ require([
   view.ui.add(legendExpand, "top-right");
   view.ui.add(legendModalButton, "top-right");
 
-  view.watch("widthBreakpoint", function(newVal){
+  //グラフ
+  const graphExpand = new Expand({
+    expandIconClass: "esri-icon-chart",
+    expandTooltip: "グラフ",
+    expanded: false,
+    view: view,
+    content: document.getElementById("graphDiv")
+  });
+  view.ui.add(graphExpand, "top-left");
+
+  view.watch("widthBreakpoint", function (newVal) {
     if (newVal === "xsmall") {
       legendExpand.visible = false;
       document.getElementById("legendModalButton").style.display = "block";
@@ -354,3 +531,15 @@ require([
   document.getElementById("closeLegendModalButton").onclick = () => { document.getElementById("legendModal").active = false; }
 
 });
+
+
+function formatDate(date, format) {
+  format = format.replace(/yyyy/g, date.getFullYear());
+  format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+  format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+  format = format.replace(/HH/g, ('0' + date.getHours()).slice(-2));
+  format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+  format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+  format = format.replace(/SSS/g, ('00' + date.getMilliseconds()).slice(-3));
+  return format;
+}
