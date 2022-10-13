@@ -423,6 +423,7 @@ require([
       }
 
       var ctx = graphCanvas.getContext('2d');
+      ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
 
       const labels = selectedGraphInfo.StatisticsFields.map(field => {
         return field.title;
