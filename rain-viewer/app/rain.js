@@ -407,7 +407,7 @@ require([
     const graphCanvas = document.getElementById("graphCanvas");
 
     if (selectedGraphInfo) {
-      graphExpand.expanded = true;
+      // graphExpand.expanded = true;
       // graphExpand.visible = true;
 
       for (const statisticsField of selectedGraphInfo.StatisticsFields) {
@@ -489,7 +489,7 @@ require([
         }
       });
     } else {
-      graphExpand.expanded = false;
+      // graphExpand.expanded = false;
       // graphExpand.visible = false;
     }
   }
