@@ -230,6 +230,8 @@ require([
         map.remove(layer);
       });
     }
+    graphExpand.expanded = false;
+    graphExpand.visible = false;
 
     //グラフ集計の情報を取得
     selectedGraphInfo = graphInfos.find(info => (info.scenario === selectedScenario.name && info.theme === selectedTheme.name));
@@ -245,10 +247,14 @@ require([
             url: statisticsField["url"]
           });
         });
+
+        graphExpand.expanded = true;
+        graphExpand.visible = true;
       }
-    }
-    if (timeSlider.timeExtent) {
-      graphRedraw(timeSlider.timeExtent.start);
+
+      if (timeSlider.timeExtent) {
+        graphRedraw(timeSlider.timeExtent.start);
+      }
     }
   });
   layerSelect.addEventListener("change", () => {
@@ -399,16 +405,9 @@ require([
 
   //グラフの再描画処理
   async function graphRedraw(lastTime) {
-
-    if (graphInstance) {
-      graphInstance.destroy();
-    }
-
     const graphCanvas = document.getElementById("graphCanvas");
 
     if (selectedGraphInfo) {
-      // graphExpand.expanded = true;
-      // graphExpand.visible = true;
 
       for (const statisticsField of selectedGraphInfo.StatisticsFields) {
         statisticsField["count"] = 0;
@@ -420,6 +419,10 @@ require([
         }
         const count = await statisticsField.layer.queryFeatureCount(query);
         statisticsField["count"] = count;
+      }
+
+      if (graphInstance) {
+        graphInstance.destroy();
       }
 
       var ctx = graphCanvas.getContext('2d');
@@ -489,9 +492,6 @@ require([
           maintainAspectRatio: false
         }
       });
-    } else {
-      // graphExpand.expanded = false;
-      // graphExpand.visible = false;
     }
   }
 
